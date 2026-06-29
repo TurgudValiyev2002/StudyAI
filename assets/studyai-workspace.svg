@@ -1,0 +1,23 @@
+<svg width="360" height="240" viewBox="0 0 360 240" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">StudyAI workspace</title>
+  <desc id="desc">A laptop, study cards, and connected knowledge nodes.</desc>
+  <rect width="360" height="240" rx="8" fill="#EEF2F7"/>
+  <rect x="70" y="68" width="220" height="126" rx="8" fill="#17202A"/>
+  <rect x="84" y="82" width="192" height="92" rx="6" fill="#FFFFFF"/>
+  <rect x="102" y="101" width="88" height="10" rx="5" fill="#1F7A68"/>
+  <rect x="102" y="121" width="130" height="8" rx="4" fill="#DCE3EC"/>
+  <rect x="102" y="138" width="106" height="8" rx="4" fill="#DCE3EC"/>
+  <rect x="84" y="185" width="192" height="12" rx="6" fill="#B45F36"/>
+  <rect x="38" y="44" width="76" height="52" rx="8" fill="#FFFFFF" stroke="#DCE3EC" stroke-width="3"/>
+  <rect x="52" y="59" width="48" height="7" rx="3.5" fill="#1F7A68"/>
+  <rect x="52" y="74" width="36" height="6" rx="3" fill="#DCE3EC"/>
+  <rect x="246" y="35" width="78" height="54" rx="8" fill="#FFFFFF" stroke="#DCE3EC" stroke-width="3"/>
+  <rect x="260" y="50" width="50" height="7" rx="3.5" fill="#B45F36"/>
+  <rect x="260" y="65" width="42" height="6" rx="3" fill="#DCE3EC"/>
+  <circle cx="76" cy="136" r="13" fill="#1F7A68"/>
+  <circle cx="284" cy="137" r="13" fill="#B45F36"/>
+  <circle cx="180" cy="39" r="13" fill="#1F7A68"/>
+  <path d="M88 132L150 94" stroke="#8EA0B5" stroke-width="4" stroke-linecap="round"/>
+  <path d="M272 132L213 94" stroke="#8EA0B5" stroke-width="4" stroke-linecap="round"/>
+  <path d="M180 52V82" stroke="#8EA0B5" stroke-width="4" stroke-linecap="round"/>
+</svg>
