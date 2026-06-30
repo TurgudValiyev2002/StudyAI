@@ -8,12 +8,25 @@
 </head>
 <body>
   <div class="app-shell">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="brand-mark">S</div>
-        <div>
-          <strong>StudyAI</strong>
-          <span>Adaptive study workspace</span>
+    <header class="sidebar">
+      <div class="brand-row">
+        <div class="brand">
+          <div class="brand-mark">S</div>
+          <div>
+            <strong>StudyAI</strong>
+            <span>Adaptive study workspace</span>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <span class="label">Current class</span>
+          <select id="activeClassSelect"></select>
+          <button class="secondary full" id="quickClassBtn">New Class</button>
+        </div>
+
+        <div class="topbar-actions header-actions">
+          <button class="icon-button" id="themeToggle" title="Toggle theme">◐</button>
+          <button class="primary" id="newStudyBtn">Start Study Session</button>
         </div>
       </div>
 
@@ -27,23 +40,13 @@
         <button class="nav-item" data-view="statistics">Statistics</button>
         <button class="nav-item" data-view="settings">Settings</button>
       </nav>
-
-      <div class="sidebar-card">
-        <span class="label">Current class</span>
-        <select id="activeClassSelect"></select>
-        <button class="secondary full" id="quickClassBtn">New Class</button>
-      </div>
-    </aside>
+    </header>
 
     <main class="main">
       <header class="topbar">
         <div>
           <p class="eyebrow">Personal AI study, exam, and assignment tutor</p>
           <h1 id="pageTitle">Dashboard</h1>
-        </div>
-        <div class="topbar-actions">
-          <button class="icon-button" id="themeToggle" title="Toggle theme">◐</button>
-          <button class="primary" id="newStudyBtn">Start Study Session</button>
         </div>
       </header>
 

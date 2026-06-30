@@ -46,21 +46,28 @@ button {
 }
 
 .app-shell {
-  display: grid;
-  grid-template-columns: 280px 1fr;
+  display: block;
   min-height: 100vh;
 }
 
 .sidebar {
   position: sticky;
   top: 0;
-  height: 100vh;
-  padding: 22px;
-  background: var(--surface);
-  border-right: 1px solid var(--line);
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
+  z-index: 20;
+  padding: 14px 26px 12px;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 12px;
+  box-shadow: 0 10px 28px rgba(23, 32, 42, 0.06);
+  backdrop-filter: blur(16px);
+}
+
+.brand-row {
+  display: grid;
+  grid-template-columns: auto minmax(340px, 460px) auto;
+  align-items: center;
+  gap: 18px;
 }
 
 .brand {
@@ -90,22 +97,29 @@ button {
 }
 
 .nav-list {
-  display: grid;
-  gap: 6px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: thin;
 }
 
 .nav-item {
-  width: 100%;
-  padding: 11px 12px;
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding: 0 14px;
   border-radius: 8px;
-  text-align: left;
-  background: transparent;
+  text-align: center;
+  background: var(--surface-2);
   color: var(--muted);
+  border: 1px solid transparent;
+  white-space: nowrap;
 }
 
 .nav-item.active, .nav-item:hover {
-  color: var(--text);
-  background: var(--surface-2);
+  color: white;
+  background: var(--primary);
+  border-color: var(--primary);
 }
 
 .sidebar-card, .panel, .metric, .hero-band, .focus-panel {
@@ -115,14 +129,18 @@ button {
 }
 
 .sidebar-card {
-  margin-top: auto;
-  padding: 14px;
+  padding: 10px;
   display: grid;
+  grid-template-columns: auto minmax(160px, 1fr) auto;
+  align-items: center;
   gap: 10px;
+  box-shadow: none;
 }
 
 .main {
-  padding: 26px;
+  width: min(1500px, 100%);
+  margin: 0 auto;
+  padding: 28px 26px 42px;
   min-width: 0;
 }
 
@@ -134,7 +152,8 @@ button {
 }
 
 .topbar {
-  margin-bottom: 22px;
+  margin-bottom: 18px;
+  padding: 2px 2px 8px;
 }
 
 h1, h2, h3, p {
@@ -162,6 +181,10 @@ h2 {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.header-actions {
+  justify-self: end;
 }
 
 .primary, .secondary, .danger, .icon-button {
@@ -595,19 +618,17 @@ dialog::backdrop {
 }
 
 @media (max-width: 1080px) {
-  .app-shell {
+  .brand-row {
     grid-template-columns: 1fr;
+    align-items: stretch;
   }
 
-  .sidebar {
-    position: static;
-    height: auto;
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
+  .header-actions {
+    justify-self: stretch;
   }
 
-  .nav-list {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  .header-actions button {
+    flex: 1;
   }
 
   .hero-band, .two-column, .study-layout, .assignment-layout, .result-score {
@@ -624,6 +645,23 @@ dialog::backdrop {
     padding: 16px;
   }
 
+  .sidebar {
+    position: static;
+  }
+
+  .brand {
+    min-width: 0;
+  }
+
+  .sidebar-card {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-list {
+    margin: 0 -16px;
+    padding: 0 16px 4px;
+  }
+
   .topbar, .section-head, .panel-head, .exam-topline {
     align-items: stretch;
     flex-direction: column;
@@ -637,7 +675,7 @@ dialog::backdrop {
     flex: 1;
   }
 
-  .nav-list, .metric-grid, .class-grid, .stats-grid, .form-grid, .form-grid.compact, .choice-grid, .step-grid {
+  .metric-grid, .class-grid, .stats-grid, .form-grid, .form-grid.compact, .choice-grid, .step-grid {
     grid-template-columns: 1fr;
   }
 
