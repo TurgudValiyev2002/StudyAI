@@ -112,6 +112,8 @@ function setView(viewName) {
     results: "Results",
     assignments: "Assignments",
     statistics: "Statistics",
+    about: "About",
+    contact: "Contact",
     settings: "Settings"
   }[viewName] || "StudyAI";
 }
