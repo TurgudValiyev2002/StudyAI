@@ -1,4 +1,6 @@
 const STORAGE_KEY = "studyai_state_v1";
+const STUDYAI_API_URL = window.STUDYAI_API_URL || "/api/studyai";
+
 
 const state = loadState();
 let currentExam = null;
@@ -49,7 +51,8 @@ function loadState() {
       name: "Dear Turgud",
       explanation: "Medium level",
       difficulty: "Medium",
-      theme: "light"
+      theme: "light",
+      aiEndpoint: STUDYAI_API_URL
     },
     activeClassId: "class-ml",
     classes: [
@@ -111,6 +114,94 @@ function hydrateClassSelects() {
   });
 }
 
+
+function studyContext(extra = {}) {
+  const cls = activeClass();
+  const classMaterials = state.materials.filter((item) => item.classId === cls?.id);
+  return {
+    user: state.settings.name,
+    activeClass: cls,
+    materials: classMaterials,
+    recentSessions: state.sessions.filter((item) => item.classId === cls?.id).slice(-6),
+    recentExams: state.exams.filter((item) => item.classId === cls?.id).slice(-5),
+    questionHistory: state.questionHistory.slice(-40),
+    weakTopics: findWeakTopics().slice(0, 8),
+    note: "This frontend stores material metadata locally. True RAG requires backend document parsing, embeddings, and vector retrieval.",
+    ...extra
+  };
+}
+
+async function callStudyAI(task, context) {
+  const response = await fetch(state.settings.aiEndpoint || STUDYAI_API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ task, context })
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.reason || data.error || `StudyAI backend failed with ${response.status}`);
+  }
+  return data;
+}
+
+function renderAIText(text) {
+  const escaped = escapeHtml(text || "");
+  return escaped
+    .split(/\n{2,}/)
+    .map((block) => {
+      const trimmed = block.trim();
+      if (!trimmed) return "";
+      if (/^[-*] /m.test(trimmed)) {
+        const items = trimmed.split("\n").map((line) => line.replace(/^[-*] /, "").trim()).filter(Boolean);
+        return `<ul>${items.map((item) => `<li>${item}</li>`).join("")}</ul>`;
+      }
+      return `<p>${trimmed.replace(/\n/g, "<br>")}</p>`;
+    })
+    .join("");
+}
+
+function normalizeAIExam(config, aiExam) {
+  if (!aiExam?.questions?.length) return null;
+  return {
+    id: uid("exam"),
+    classId: config.classId,
+    topics: config.topics.length ? config.topics : activeClass()?.topics || ["general course topic"],
+    difficulty: config.difficulty,
+    duration: config.duration,
+    rules: config.rules,
+    createdAt: new Date().toISOString(),
+    submitted: false,
+    score: 0,
+    aiGenerated: true,
+    questions: aiExam.questions.map((question) => ({
+      id: uid("q"),
+      type: ["single", "multiple", "open", "coding"].includes(question.type) ? question.type : "open",
+      topic: String(question.topic || "course topic"),
+      difficulty: String(question.difficulty || config.difficulty),
+      text: String(question.text || "Explain the selected topic."),
+      options: Array.isArray(question.options) ? question.options.map(String).slice(0, 6) : [],
+      correct: Array.isArray(question.correct) ? question.correct.map(Number) : Number(question.correct || 0),
+      rubric: String(question.rubric || "Answer should be clear, correct, and connected to the course context.")
+    }))
+  };
+}
+
+function normalizeAIAssignment(payload, aiAssignment) {
+  if (!aiAssignment?.steps?.length) return null;
+  return aiAssignment.steps.slice(0, 8).map((step) => ({
+    title: String(step.title || payload.title || "Assignment step"),
+    code: String(step.code || ""),
+    explain: String(step.explain || "Study this step carefully before moving forward.")
+  }));
+}
+
+function markBackendStatus(target, model, fallbackReason = "") {
+  const modelText = model ? `<div class="card-meta"><span>Model: ${escapeHtml(model)}</span><span>Hosted AI</span></div>` : "";
+  const fallbackText = fallbackReason ? `<div class="card-meta"><span>Local fallback</span><span>${escapeHtml(fallbackReason)}</span></div>` : "";
+  target.insertAdjacentHTML("afterbegin", modelText || fallbackText);
+}
+
 function renderAll() {
   document.body.dataset.theme = state.settings.theme;
   hydrateClassSelects();
@@ -121,6 +212,7 @@ function renderAll() {
   $("#settingName").value = state.settings.name;
   $("#settingExplanation").value = state.settings.explanation;
   $("#settingDifficulty").value = state.settings.difficulty;
+  if ($("#settingAiEndpoint")) $("#settingAiEndpoint").value = state.settings.aiEndpoint || STUDYAI_API_URL;
 }
 
 function renderDashboard() {
@@ -631,7 +723,7 @@ $("#materialForm").addEventListener("submit", (event) => {
   renderAll();
 });
 
-$("#studyForm").addEventListener("submit", (event) => {
+$("#studyForm").addEventListener("submit", async (event) => {
   event.preventDefault();
   const payload = {
     classId: $("#studyClass").value,
@@ -641,15 +733,35 @@ $("#studyForm").addEventListener("submit", (event) => {
     explanation: $("#studyExplanation").value,
     length: $("#studyLength").value
   };
-  latestStudySession = {
-    id: uid("session"),
-    ...payload,
-    summary: `${payload.length} preparation for ${payload.topic}`,
-    content: createStudyPlan(payload),
-    createdAt: new Date().toISOString()
-  };
-  $("#studyOutput").classList.remove("empty-state");
-  $("#studyOutput").innerHTML = latestStudySession.content;
+
+  const output = $("#studyOutput");
+  output.classList.remove("empty-state");
+  output.innerHTML = "Preparing hosted AI lesson...";
+
+  try {
+    const result = await callStudyAI("study", studyContext({ payload }));
+    latestStudySession = {
+      id: uid("session"),
+      ...payload,
+      summary: `${payload.length} AI preparation for ${payload.topic}`,
+      content: renderAIText(result.answer),
+      model: result.model || "hosted AI",
+      createdAt: new Date().toISOString()
+    };
+    output.innerHTML = latestStudySession.content;
+    markBackendStatus(output, latestStudySession.model);
+  } catch (error) {
+    latestStudySession = {
+      id: uid("session"),
+      ...payload,
+      summary: `${payload.length} local preparation for ${payload.topic}`,
+      content: createStudyPlan(payload),
+      model: "local heuristic fallback",
+      createdAt: new Date().toISOString()
+    };
+    output.innerHTML = latestStudySession.content;
+    markBackendStatus(output, "", error.message);
+  }
 });
 
 $("#saveStudyBtn").addEventListener("click", () => {
@@ -660,9 +772,9 @@ $("#saveStudyBtn").addEventListener("click", () => {
   renderAll();
 });
 
-$("#examForm").addEventListener("submit", (event) => {
+$("#examForm").addEventListener("submit", async (event) => {
   event.preventDefault();
-  currentExam = generateExam({
+  const config = {
     classId: $("#examClass").value,
     topics: $("#examTopics").value.split(",").map((topic) => topic.trim()).filter(Boolean),
     difficulty: $("#examDifficulty").value,
@@ -672,8 +784,24 @@ $("#examForm").addEventListener("submit", (event) => {
     open: Number($("#openCount").value) || 0,
     coding: Number($("#codingCount").value) || 0,
     rules: $("#examRules").value.trim()
-  });
+  };
+
+  const preview = $("#examPreview");
+  preview.classList.remove("empty-state");
+  preview.innerHTML = "Generating hosted AI exam...";
+
+  try {
+    const result = await callStudyAI("exam", studyContext({ config }));
+    currentExam = normalizeAIExam(config, result.exam) || generateExam(config);
+    currentExam.model = result.model || "hosted AI";
+  } catch (error) {
+    currentExam = generateExam(config);
+    currentExam.model = "local heuristic fallback";
+    currentExam.fallbackReason = error.message;
+  }
+
   renderExamPreview();
+  if (currentExam.model) markBackendStatus($("#examPreview"), currentExam.model === "local heuristic fallback" ? "" : currentExam.model, currentExam.fallbackReason || "");
 });
 
 $("#startExamBtn").addEventListener("click", startExam);
@@ -687,7 +815,7 @@ $("#confirmDialog").addEventListener("close", () => {
   if ($("#confirmDialog").returnValue === "confirm") submitExam(false);
 });
 
-$("#assignmentForm").addEventListener("submit", (event) => {
+$("#assignmentForm").addEventListener("submit", async (event) => {
   event.preventDefault();
   const payload = {
     classId: $("#assignmentClass").value,
@@ -695,9 +823,23 @@ $("#assignmentForm").addEventListener("submit", (event) => {
     details: $("#assignmentDetails").value.trim(),
     mode: $("#assignmentMode").value
   };
-  assignmentPlan = buildAssignmentPlan(payload);
+
+  const steps = $("#assignmentSteps");
+  steps.classList.remove("empty-state");
+  steps.innerHTML = "Preparing hosted AI step plan...";
+
+  let model = "local heuristic fallback";
+  try {
+    const result = await callStudyAI("assignment", studyContext({ payload }));
+    assignmentPlan = normalizeAIAssignment(payload, result.assignment) || buildAssignmentPlan(payload);
+    model = result.model || "hosted AI";
+  } catch (error) {
+    assignmentPlan = buildAssignmentPlan(payload);
+    model = `local heuristic fallback: ${error.message}`;
+  }
+
   visibleAssignmentSteps = 1;
-  state.assignments.push({ id: uid("assignment"), ...payload, createdAt: new Date().toISOString() });
+  state.assignments.push({ id: uid("assignment"), ...payload, model, createdAt: new Date().toISOString() });
   saveState();
   renderAssignmentSteps();
 });
@@ -712,6 +854,7 @@ $("#settingsForm").addEventListener("submit", (event) => {
   state.settings.name = $("#settingName").value.trim() || "Dear Turgud";
   state.settings.explanation = $("#settingExplanation").value;
   state.settings.difficulty = $("#settingDifficulty").value;
+  state.settings.aiEndpoint = $("#settingAiEndpoint")?.value.trim() || STUDYAI_API_URL;
   saveState();
   renderAll();
 });

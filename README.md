@@ -49,3 +49,42 @@ This first version is a local static prototype. It already includes the main pro
 Open `index.html` in a browser.
 
 No build step is required for this prototype.
+
+## Hosted AI Integration
+
+StudyAI now includes a Vercel endpoint at `api/studyai.js` using the same provider pattern as the finance tracker:
+
+1. Hugging Face primary model from `HF_MODEL`.
+2. Hugging Face fallback model from `HF_FALLBACK_MODEL`.
+3. OpenAI fallback from `OPENAI_MODEL`, only when `OPENAI_FALLBACK=true`.
+4. Browser local heuristic fallback if the hosted endpoint is unavailable.
+
+Required Vercel environment variables:
+
+```text
+HF_TOKEN
+HF_MODEL
+HF_FALLBACK_MODEL
+OPENAI_API_KEY
+OPENAI_MODEL
+OPENAI_FALLBACK
+ALLOWED_ORIGIN
+```
+
+Recommended values:
+
+```text
+HF_MODEL=meta-llama/Llama-3.3-70B-Instruct
+HF_FALLBACK_MODEL=mistralai/Mistral-7B-Instruct-v0.3
+OPENAI_MODEL=gpt-4.1-mini
+OPENAI_FALLBACK=true
+ALLOWED_ORIGIN=https://turgudvaliyev2002.github.io
+```
+
+For GitHub Pages, set the deployed Vercel endpoint in the app Settings page, for example:
+
+```text
+https://your-studyai-vercel-app.vercel.app/api/studyai
+```
+
+Important: this adds real hosted LLM calls. True RAG still requires the later material pipeline: file parsing, chunking, embeddings, vector storage, retrieval, and citation display.

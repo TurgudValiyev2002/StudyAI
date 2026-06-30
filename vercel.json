@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/studyai.js": {
+      "maxDuration": 30
+    }
+  }
+}
