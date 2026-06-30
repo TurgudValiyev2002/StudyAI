@@ -1,14 +1,18 @@
 const STORAGE_KEY = "studyai_state_v1";
-const STUDYAI_API_URL = window.STUDYAI_API_URL || "/api/studyai";
+const DEPLOYED_STUDYAI_API_URL = window.STUDYAI_API_URL || "";
+const IS_LOCAL_HOST = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
+const STUDYAI_API_URL = DEPLOYED_STUDYAI_API_URL || (IS_LOCAL_HOST ? "/api/studyai" : "");
 
 
 const state = loadState();
+normalizeState();
 let currentExam = null;
 let timerId = null;
 let remainingSeconds = 0;
 let assignmentPlan = [];
 let visibleAssignmentSteps = 0;
 let latestStudySession = null;
+let chatMessages = [];
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -73,6 +77,14 @@ function loadState() {
   };
 }
 
+function normalizeState() {
+  state.settings ||= {};
+  if (!IS_LOCAL_HOST && state.settings.aiEndpoint === "/api/studyai") {
+    state.settings.aiEndpoint = STUDYAI_API_URL;
+    saveState();
+  }
+}
+
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
@@ -132,7 +144,12 @@ function studyContext(extra = {}) {
 }
 
 async function callStudyAI(task, context) {
-  const response = await fetch(state.settings.aiEndpoint || STUDYAI_API_URL, {
+  const endpoint = String(state.settings.aiEndpoint || STUDYAI_API_URL || "").trim();
+  if (!endpoint) {
+    throw new Error("Hosted AI backend is not connected yet. Deploy StudyAI on Vercel, then paste the /api/studyai URL in Settings.");
+  }
+
+  const response = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ task, context })
@@ -197,9 +214,28 @@ function normalizeAIAssignment(payload, aiAssignment) {
 }
 
 function markBackendStatus(target, model, fallbackReason = "") {
-  const modelText = model ? `<div class="card-meta"><span>Model: ${escapeHtml(model)}</span><span>Hosted AI</span></div>` : "";
-  const fallbackText = fallbackReason ? `<div class="card-meta"><span>Local fallback</span><span>${escapeHtml(fallbackReason)}</span></div>` : "";
-  target.insertAdjacentHTML("afterbegin", modelText || fallbackText);
+  const modelText = model ? `<div class="ai-status"><strong>Hosted AI response</strong><span>Model: ${escapeHtml(model)}</span></div>` : "";
+  const previewText = fallbackReason ? `<div class="ai-status"><strong>Preview mode</strong><span>${escapeHtml(fallbackReason)}</span></div>` : "";
+  target.insertAdjacentHTML("afterbegin", modelText || previewText);
+}
+
+function appendChatMessage(role, text) {
+  chatMessages.push({ role, text, createdAt: new Date().toISOString() });
+  const messages = $("#chatMessages");
+  messages.insertAdjacentHTML("beforeend", `<div class="chat-message ${role}">${renderAIText(text)}</div>`);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function openPreparationChat() {
+  if (!latestStudySession) return;
+  $("#studyChatPanel").hidden = false;
+  $("#chatTopicLabel").textContent = latestStudySession.topic;
+  $("#chatModelLabel").textContent = latestStudySession.model && latestStudySession.model !== "preview mode" ? latestStudySession.model : "AI tutor";
+
+  if (!chatMessages.length) {
+    appendChatMessage("ai", "I am ready. Ask me anything about this preparation plan, and I will explain it step by step.");
+  }
+  $("#chatInput").focus();
 }
 
 function renderAll() {
@@ -725,6 +761,9 @@ $("#materialForm").addEventListener("submit", (event) => {
 
 $("#studyForm").addEventListener("submit", async (event) => {
   event.preventDefault();
+  $("#startChatBtn").disabled = true;
+  $("#studyChatPanel").hidden = true;
+  chatMessages = [];
   const payload = {
     classId: $("#studyClass").value,
     topic: $("#studyTopic").value.trim() || "selected course topic",
@@ -750,17 +789,19 @@ $("#studyForm").addEventListener("submit", async (event) => {
     };
     output.innerHTML = latestStudySession.content;
     markBackendStatus(output, latestStudySession.model);
+    $("#startChatBtn").disabled = false;
   } catch (error) {
     latestStudySession = {
       id: uid("session"),
       ...payload,
-      summary: `${payload.length} local preparation for ${payload.topic}`,
+      summary: `${payload.length} preview preparation for ${payload.topic}`,
       content: createStudyPlan(payload),
-      model: "local heuristic fallback",
+      model: "preview mode",
       createdAt: new Date().toISOString()
     };
     output.innerHTML = latestStudySession.content;
     markBackendStatus(output, "", error.message);
+    $("#startChatBtn").disabled = false;
   }
 });
 
@@ -770,6 +811,36 @@ $("#saveStudyBtn").addEventListener("click", () => {
   latestStudySession = null;
   saveState();
   renderAll();
+});
+
+$("#startChatBtn").addEventListener("click", openPreparationChat);
+
+$("#chatForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const input = $("#chatInput");
+  const question = input.value.trim();
+  if (!question || !latestStudySession) return;
+
+  input.value = "";
+  appendChatMessage("user", question);
+  appendChatMessage("ai", "Thinking...");
+  const thinkingNode = $("#chatMessages").lastElementChild;
+
+  try {
+    const result = await callStudyAI("study_chat", studyContext({
+      activePreparation: {
+        topic: latestStudySession.topic,
+        summary: latestStudySession.summary,
+        content: latestStudySession.content.replace(/<[^>]+>/g, " ")
+      },
+      chatMessages: chatMessages.slice(-10),
+      question
+    }));
+    thinkingNode.innerHTML = renderAIText(result.answer);
+    $("#chatModelLabel").textContent = result.model || "Hosted AI";
+  } catch (error) {
+    thinkingNode.innerHTML = renderAIText(`The hosted AI backend is not connected yet, so I cannot answer as a real chatbot from GitHub Pages. Connect the Vercel endpoint in Settings, then ask again. Technical reason: ${error.message}`);
+  }
 });
 
 $("#examForm").addEventListener("submit", async (event) => {

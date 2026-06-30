@@ -94,7 +94,7 @@
             <p class="eyebrow">Course memory</p>
             <h2>Classes</h2>
           </div>
-          <button class="primary" id="addClassBtn">Add Class</button>
+          <button class="primary large-action" id="addClassBtn">Add Class</button>
         </div>
         <div id="classGrid" class="class-grid"></div>
       </section>
@@ -149,9 +149,26 @@
           <section class="panel output-panel">
             <div class="panel-head">
               <h2>Preparation Plan</h2>
-              <button class="secondary" id="saveStudyBtn">Save</button>
+              <div class="panel-actions">
+                <button class="secondary" id="saveStudyBtn">Save</button>
+                <button class="primary" id="startChatBtn" disabled>Start AI Chatbot</button>
+              </div>
             </div>
             <div id="studyOutput" class="lesson-output empty-state">Choose a class and topic. StudyAI will build a compact lesson, examples, mistakes, and practice questions.</div>
+            <div id="studyChatPanel" class="chat-panel" hidden>
+              <div class="chat-head">
+                <div>
+                  <span class="label">Preparation chatbot</span>
+                  <strong id="chatTopicLabel">Ask follow-up questions</strong>
+                </div>
+                <span class="pill" id="chatModelLabel">AI tutor</span>
+              </div>
+              <div id="chatMessages" class="chat-messages"></div>
+              <form id="chatForm" class="chat-form">
+                <input id="chatInput" placeholder="Ask about this preparation plan..." autocomplete="off">
+                <button class="primary" type="submit">Send</button>
+              </form>
+            </div>
           </section>
         </div>
       </section>

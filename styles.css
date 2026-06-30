@@ -193,6 +193,13 @@ h2 {
 
 .full { width: 100%; }
 
+.large-action {
+  min-height: 54px;
+  padding: 0 26px;
+  font-size: 1.02rem;
+  box-shadow: 0 12px 28px rgba(31, 122, 104, 0.2);
+}
+
 .view {
   display: none;
 }
@@ -276,6 +283,13 @@ h2 {
 
 .panel-head {
   margin-bottom: 16px;
+}
+
+.panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .stack {
@@ -374,6 +388,77 @@ textarea {
 
 .lesson-output {
   line-height: 1.65;
+}
+
+.ai-status {
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+.ai-status strong {
+  display: block;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.chat-panel {
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.chat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+}
+
+.chat-head strong {
+  display: block;
+}
+
+.chat-messages {
+  max-height: 360px;
+  overflow: auto;
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+}
+
+.chat-message {
+  max-width: 86%;
+  padding: 11px 12px;
+  border-radius: 8px;
+  line-height: 1.5;
+}
+
+.chat-message.user {
+  justify-self: end;
+  color: white;
+  background: var(--primary);
+}
+
+.chat-message.ai {
+  justify-self: start;
+  background: var(--surface-2);
+}
+
+.chat-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  padding: 14px;
+  border-top: 1px solid var(--line);
 }
 
 .lesson-output h3 {
@@ -548,11 +633,15 @@ dialog::backdrop {
     width: 100%;
   }
 
-  .topbar-actions button, .submit-row button {
+  .topbar-actions button, .submit-row button, .panel-actions button {
     flex: 1;
   }
 
   .nav-list, .metric-grid, .class-grid, .stats-grid, .form-grid, .form-grid.compact, .choice-grid, .step-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chat-form {
     grid-template-columns: 1fr;
   }
 }

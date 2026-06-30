@@ -161,6 +161,7 @@ function systemPrompt(task) {
   if (task === "assignment") return `${base} Guide assignments step by step. Do not dump a complete final solution at once unless explicitly asked. Explain why each part is needed.`;
   if (task === "exam") return `${base} Generate original exam questions. Avoid repeating old questions. Return only valid JSON when the user asks for JSON.`;
   if (task === "grade") return `${base} Grade fairly. Explain mistakes, weak topics, and recovery actions.`;
+  if (task === "study_chat") return `${base} Continue the current preparation session as an interactive chatbot. Answer the student's follow-up question clearly and connect it to the preparation plan.`;
   return base;
 }
 
@@ -190,6 +191,12 @@ function buildStudyPrompt(task, context) {
     ],
     recommendations: [
       "Create concise learning recommendations based on study sessions, materials, exams, and weak topics."
+    ],
+    study_chat: [
+      "Answer the user's follow-up question inside the active preparation session.",
+      "Use the preparation plan, class context, and recent chat messages.",
+      "Be concise first, then add an example or check question if useful.",
+      "If the user asks for something outside the available material, say what assumption you are making."
     ]
   }[task] || ["Help the user study clearly."];
 
