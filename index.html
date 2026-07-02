@@ -459,17 +459,26 @@
           <h2 id="accountDialogTitle" data-i18n="enterYourStudySpace">Enter your study space</h2>
           <p id="accountDialogText" data-i18n="loginRequiredText">Login or register to create classes, upload materials, save exams, and keep your study data private.</p>
         </div>
+        <button class="icon-button account-close" id="accountCloseBtn" type="button" aria-label="Close">x</button>
       </div>
       <div class="account-tabs">
         <button class="secondary active" id="loginTab" type="button" data-account-mode="login" data-i18n="login">Login</button>
         <button class="secondary" id="registerTab" type="button" data-account-mode="register" data-i18n="register">Register</button>
       </div>
-      <label id="accountNameLabel"><span data-i18n="yourName">Your name</span><input id="authName" placeholder="Dear Turgud"></label>
       <label><span data-i18n="email">Email</span><input id="authEmail" type="email" autocomplete="email" required placeholder="student@example.com"></label>
-      <label><span data-i18n="password">Password</span><input id="authPassword" type="password" autocomplete="current-password" required placeholder="Minimum 4 characters"></label>
+      <label><span data-i18n="password">Password</span><input id="authPassword" type="password" autocomplete="current-password" required data-i18n-placeholder="passwordPlaceholder" placeholder="Minimum 8 characters"></label>
+      <div class="account-profile-grid" id="registrationFields">
+        <label><span data-i18n="firstName">Name</span><input id="authName" data-i18n-placeholder="firstNamePlaceholder" placeholder="Turgud"></label>
+        <label><span data-i18n="surname">Surname</span><input id="authSurname" data-i18n-placeholder="surnamePlaceholder" placeholder="Valiyev"></label>
+        <label><span data-i18n="birthdate">Birthdate</span><input id="authBirthdate" type="date"></label>
+        <label><span data-i18n="gender">Gender</span><select id="authGender"><option value="" data-i18n="preferNotSay">Prefer not to say</option><option value="Female" data-i18n="female">Female</option><option value="Male" data-i18n="male">Male</option><option value="Other" data-i18n="other">Other</option></select></label>
+        <label><span data-i18n="university">University</span><input id="authUniversity" data-i18n-placeholder="universityPlaceholder" placeholder="Optional"></label>
+        <label><span data-i18n="fieldOfStudy">Field of study</span><input id="authField" data-i18n-placeholder="fieldPlaceholder" placeholder="Computer Science"></label>
+        <label class="wide"><span data-i18n="educationLevel">Education level</span><select id="authEducation"><option value="High school" data-i18n="highSchool">High school</option><option value="Bachelor" data-i18n="bachelor">Bachelor</option><option value="Master" data-i18n="master">Master</option><option value="PhD" data-i18n="phd">PhD</option></select></label>
+      </div>
       <div id="accountMessage" class="account-message" hidden></div>
       <div class="submit-row">
-        <button class="secondary" value="cancel" type="submit" data-i18n="cancel">Cancel</button>
+        <button class="secondary" id="accountCancelBtn" value="cancel" type="button" data-i18n="cancel">Cancel</button>
         <button class="primary" id="accountSubmitBtn" value="confirm" type="submit" data-i18n="login">Login</button>
       </div>
     </form>

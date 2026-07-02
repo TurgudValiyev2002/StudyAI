@@ -1259,6 +1259,7 @@ dialog::backdrop {
 }
 
 .account-modal-hero {
+  position: relative;
   display: grid;
   grid-template-columns: 90px 1fr;
   gap: 16px;
@@ -1274,10 +1275,28 @@ dialog::backdrop {
   line-height: 1.55;
 }
 
+.account-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+}
+
 .account-tabs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+}
+
+.account-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.account-profile-grid[hidden] {
+  display: none;
 }
 
 .account-tabs button.active {
@@ -1386,7 +1405,7 @@ dialog::backdrop {
     text-align: center;
   }
 
-  .metric-grid, .class-grid, .stats-grid, .form-grid, .form-grid.compact, .choice-grid, .step-grid, .info-card-grid, .contact-grid, .flashcard-deck, .rag-status-grid {
+  .metric-grid, .class-grid, .stats-grid, .form-grid, .form-grid.compact, .choice-grid, .step-grid, .info-card-grid, .contact-grid, .flashcard-deck, .rag-status-grid, .account-profile-grid {
     grid-template-columns: 1fr;
   }
 

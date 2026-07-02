@@ -50,12 +50,29 @@ const TRANSLATIONS = {
     loginRequiredText: "Login or register to create classes, upload materials, save exams, and keep your study data private. Prototype note: no password is stored until Firebase Auth is connected.",
     email: "Email",
     password: "Password",
+    passwordPlaceholder: "Minimum 8 characters",
+    firstName: "Name",
+    firstNamePlaceholder: "Turgud",
+    surname: "Surname",
+    surnamePlaceholder: "Valiyev",
+    birthdate: "Birthdate",
+    gender: "Gender",
+    preferNotSay: "Prefer not to say",
+    female: "Female",
+    male: "Male",
+    other: "Other",
+    university: "University",
+    universityPlaceholder: "Optional",
+    fieldOfStudy: "Field of study",
+    fieldPlaceholder: "Computer Science",
+    educationLevel: "Education level",
+    highSchool: "High school",
     loginSuccess: "Welcome back. Your study space is opening.",
     registerSuccess: "Account created. Your clean study space is opening.",
     logoutSuccess: "You logged out. Private study data is hidden now.",
     loginFailed: "Account not found or password is wrong.",
     registerFailed: "This email already has an account.",
-    passwordShort: "Password must be at least 4 characters.",
+    passwordShort: "Password must be at least 8 characters.",
     enteringStudyAI: "Bird is flying into your study space...",
     leavingStudyAI: "Bird is flying back. Your private data is hidden.",
     darkMode: "Dark mode",
@@ -748,12 +765,13 @@ function renderAccountDialog() {
   const isRegister = accountMode === "register";
   $("#loginTab").classList.toggle("active", !isRegister);
   $("#registerTab").classList.toggle("active", isRegister);
-  $("#accountNameLabel").hidden = !isRegister;
+  $("#registrationFields").hidden = !isRegister;
+  $("#authPassword").autocomplete = isRegister ? "new-password" : "current-password";
   $("#accountSubmitBtn").textContent = isRegister ? t("register") : t("login");
   $("#accountModeLabel").textContent = isRegister ? t("register") : t("loginRequired");
   $("#accountDialogTitle").textContent = isRegister ? "Create your study space" : t("enterYourStudySpace");
   $("#accountDialogText").textContent = isRegister
-    ? "This is a UI prototype. No password is stored; Firebase Auth will handle real accounts later."
+    ? "Create a learning profile for the prototype. No password is stored; Firebase Auth will handle real accounts later."
     : t("loginRequiredText");
   $("#accountMessage").hidden = true;
 }
@@ -784,6 +802,7 @@ function switchToAccount(account) {
   state = loadState();
   normalizeState();
   state.settings.name = account.name;
+  if (account.profile) state.settings.profile = account.profile;
   state.settings.language = language;
   state.settings.languageSelected = true;
   saveState();
@@ -1742,6 +1761,8 @@ $("#enterAppBtn").addEventListener("click", () => {
 
 $("#accountLoginBtn").addEventListener("click", () => openAccountDialog("login"));
 $("#accountLogoutBtn").addEventListener("click", logoutAccount);
+$("#accountCloseBtn").addEventListener("click", () => $("#accountDialog").close());
+$("#accountCancelBtn").addEventListener("click", () => $("#accountDialog").close());
 
 $$("[data-account-mode]").forEach((button) => {
   button.addEventListener("click", () => {
@@ -1752,20 +1773,29 @@ $$("[data-account-mode]").forEach((button) => {
 
 $("#accountForm").addEventListener("submit", (event) => {
   event.preventDefault();
-  if (event.submitter?.value === "cancel") {
-    $("#accountDialog").close();
-    return;
-  }
   const email = $("#authEmail").value.trim().toLowerCase();
-  const name = $("#authName").value.trim() || email.split("@")[0] || "Student";
   const password = $("#authPassword").value.trim();
   if (!email) return;
-  if (password.length < 4) {
+  if (password.length < 8) {
     showAccountMessage(t("passwordShort"));
     return;
   }
 
-  switchToAccount({ email, name });
+  const savedAccountState = loadAccountState(email, email.split("@")[0] || "Student");
+  const profile = accountMode === "register" ? {
+    firstName: $("#authName").value.trim(),
+    surname: $("#authSurname").value.trim(),
+    birthdate: $("#authBirthdate").value,
+    gender: $("#authGender").value,
+    university: $("#authUniversity").value.trim(),
+    fieldOfStudy: $("#authField").value.trim(),
+    educationLevel: $("#authEducation").value
+  } : savedAccountState.settings.profile;
+  const displayName = accountMode === "register"
+    ? [profile.firstName, profile.surname].filter(Boolean).join(" ") || email.split("@")[0] || "Student"
+    : savedAccountState.settings.name || email.split("@")[0] || "Student";
+
+  switchToAccount({ email, name: displayName, profile });
   $("#accountDialog").close();
   $("#accountForm").reset();
 });
