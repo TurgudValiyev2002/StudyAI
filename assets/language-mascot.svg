@@ -1,0 +1,28 @@
+<svg width="420" height="360" viewBox="0 0 420 360" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Funny StudyAI language mascot</title>
+  <desc id="desc">A cheerful animal mascot with books and language bubbles.</desc>
+  <rect width="420" height="360" rx="8" fill="#EEF2F7"/>
+  <circle cx="210" cy="178" r="118" fill="#FFFFFF"/>
+  <path d="M125 142C101 126 96 88 123 74C145 62 168 79 170 106" fill="#B45F36"/>
+  <path d="M295 142C319 126 324 88 297 74C275 62 252 79 250 106" fill="#B45F36"/>
+  <circle cx="210" cy="170" r="92" fill="#F4C391"/>
+  <circle cx="177" cy="157" r="11" fill="#17202A"/>
+  <circle cx="243" cy="157" r="11" fill="#17202A"/>
+  <circle cx="181" cy="153" r="3" fill="#FFFFFF"/>
+  <circle cx="247" cy="153" r="3" fill="#FFFFFF"/>
+  <path d="M192 190C203 200 218 200 229 190" stroke="#17202A" stroke-width="7" stroke-linecap="round"/>
+  <path d="M210 167L199 181H221L210 167Z" fill="#B45F36"/>
+  <rect x="127" y="242" width="166" height="54" rx="8" fill="#1F7A68"/>
+  <rect x="142" y="255" width="136" height="8" rx="4" fill="#FFFFFF" opacity="0.95"/>
+  <rect x="142" y="273" width="86" height="7" rx="3.5" fill="#FFFFFF" opacity="0.72"/>
+  <rect x="53" y="60" width="96" height="48" rx="8" fill="#FFFFFF" stroke="#DCE3EC" stroke-width="3"/>
+  <text x="75" y="91" fill="#1F7A68" font-family="Arial, sans-serif" font-size="22" font-weight="700">Hi</text>
+  <rect x="271" y="52" width="98" height="52" rx="8" fill="#FFFFFF" stroke="#DCE3EC" stroke-width="3"/>
+  <text x="293" y="84" fill="#B45F36" font-family="Arial, sans-serif" font-size="21" font-weight="700">Hallo</text>
+  <rect x="48" y="222" width="102" height="52" rx="8" fill="#FFFFFF" stroke="#DCE3EC" stroke-width="3"/>
+  <text x="66" y="255" fill="#17202A" font-family="Arial, sans-serif" font-size="20" font-weight="700">Merhaba</text>
+  <rect x="275" y="225" width="96" height="52" rx="8" fill="#FFFFFF" stroke="#DCE3EC" stroke-width="3"/>
+  <text x="294" y="258" fill="#17202A" font-family="Arial, sans-serif" font-size="18" font-weight="700">Привет</text>
+  <path d="M116 285C96 316 126 333 164 303" stroke="#B45F36" stroke-width="12" stroke-linecap="round"/>
+  <path d="M304 285C324 316 294 333 256 303" stroke="#B45F36" stroke-width="12" stroke-linecap="round"/>
+</svg>

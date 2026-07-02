@@ -7,6 +7,29 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="language-gate" id="languageGate" aria-live="polite">
+    <section class="language-window">
+      <div class="language-visual">
+        <img src="assets/language-mascot.svg" alt="Funny study animal">
+      </div>
+      <div class="language-copy">
+        <p class="eyebrow" data-i18n="languageEyebrow">Before StudyAI opens</p>
+        <h1 data-i18n="languageTitle">The tiny study coach is warming up.</h1>
+        <p class="funny-line" data-i18n="languageFunny">This animal has read zero pages today, but somehow still looks confident.</p>
+        <label>
+          <span data-i18n="languagePrompt">Select your language for learning.</span>
+          <select id="languageSelect">
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+            <option value="ru">Русский</option>
+            <option value="tr">Türkçe</option>
+          </select>
+        </label>
+        <button class="primary large-action" id="enterAppBtn" type="button" data-i18n="enterApp">Open StudyAI</button>
+      </div>
+    </section>
+  </div>
+
   <div class="app-shell">
     <header class="sidebar">
       <div class="brand-row">
@@ -14,40 +37,41 @@
           <div class="brand-mark">S</div>
           <div>
             <strong>StudyAI</strong>
-            <span>Adaptive study workspace</span>
+            <span data-i18n="brandSubtitle">Adaptive study workspace</span>
           </div>
         </div>
 
         <div class="sidebar-card">
-          <span class="label">Current class</span>
+          <span class="label" data-i18n="currentClass">Current class</span>
           <select id="activeClassSelect"></select>
-          <button class="secondary full" id="quickClassBtn">New Class</button>
+          <button class="secondary full" id="quickClassBtn" data-i18n="newClass">New Class</button>
         </div>
 
         <div class="topbar-actions header-actions">
-          <button class="icon-button" id="themeToggle" title="Toggle theme">â—</button>
-          <button class="primary" id="newStudyBtn">Start Study Session</button>
+          <button class="icon-button" id="languageButton" type="button" data-i18n="languageButton">Language</button>
+          <button class="icon-button" id="themeToggle" title="Toggle theme">Dark mode</button>
+          <button class="primary" id="newStudyBtn" data-i18n="startStudySession">Start Study Session</button>
         </div>
       </div>
 
       <nav class="nav-list" aria-label="Primary">
-        <button class="nav-item active" data-view="dashboard">Dashboard</button>
-        <button class="nav-item" data-view="classes">Classes</button>
-        <button class="nav-item" data-view="materials">Materials</button>
-        <button class="nav-item" data-view="study">Daily Prep</button>
-        <button class="nav-item" data-view="examBuilder">Exam Builder</button>
-        <button class="nav-item" data-view="assignments">Assignments</button>
-        <button class="nav-item" data-view="statistics">Statistics</button>
-        <button class="nav-item" data-view="about">About</button>
-        <button class="nav-item" data-view="contact">Contact</button>
-        <button class="nav-item" data-view="settings">Settings</button>
+        <button class="nav-item active" data-view="dashboard" data-i18n="navDashboard">Dashboard</button>
+        <button class="nav-item" data-view="classes" data-i18n="navClasses">Classes</button>
+        <button class="nav-item" data-view="materials" data-i18n="navMaterials">Materials</button>
+        <button class="nav-item" data-view="study" data-i18n="navStudy">Daily Prep</button>
+        <button class="nav-item" data-view="examBuilder" data-i18n="navExamBuilder">Exam Builder</button>
+        <button class="nav-item" data-view="assignments" data-i18n="navAssignments">Assignments</button>
+        <button class="nav-item" data-view="statistics" data-i18n="navStatistics">Statistics</button>
+        <button class="nav-item" data-view="about" data-i18n="navAbout">About</button>
+        <button class="nav-item" data-view="contact" data-i18n="navContact">Contact</button>
+        <button class="nav-item" data-view="settings" data-i18n="navSettings">Settings</button>
       </nav>
     </header>
 
     <main class="main">
       <header class="topbar">
         <div>
-          <p class="eyebrow">Personal AI study, exam, and assignment tutor</p>
+          <p class="eyebrow" data-i18n="appEyebrow">Personal AI study, exam, and assignment tutor</p>
           <h1 id="pageTitle">Dashboard</h1>
         </div>
       </header>
@@ -55,38 +79,38 @@
       <section class="view active" id="dashboardView">
         <div class="hero-band">
           <div>
-            <p class="eyebrow">Dear Turgud, build target</p>
-            <h2>StudyAI remembers each class, learns from materials, creates exams, and teaches assignments step by step.</h2>
-            <p>The first version below is a functional prototype. It uses local persistence now, and its structure is ready for Firebase Auth, Firestore, Storage, and a RAG backend.</p>
+            <p class="eyebrow" data-i18n="heroEyebrow">Dear Turgud, build target</p>
+            <h2 data-i18n="heroTitle">StudyAI remembers each class, learns from materials, creates exams, and teaches assignments step by step.</h2>
+            <p data-i18n="heroText">The first version below is a functional prototype. It uses local persistence now, and its structure is ready for Firebase Auth, Firestore, Storage, and a RAG backend.</p>
           </div>
           <div class="focus-panel">
             <img src="assets/studyai-workspace.svg" alt="Study workspace illustration">
-            <span class="label">Today focus</span>
+            <span class="label" data-i18n="todayFocusLabel">Today focus</span>
             <strong id="todayFocus">Create your first class</strong>
             <small id="todayFocusDetail">Then upload materials or start without material.</small>
           </div>
         </div>
 
         <div class="metric-grid">
-          <div class="metric"><span>Classes</span><strong id="metricClasses">0</strong></div>
-          <div class="metric"><span>Materials</span><strong id="metricMaterials">0</strong></div>
-          <div class="metric"><span>Exams Taken</span><strong id="metricExams">0</strong></div>
-          <div class="metric"><span>Average Score</span><strong id="metricScore">0%</strong></div>
+          <div class="metric"><span data-i18n="metricClasses">Classes</span><strong id="metricClasses">0</strong></div>
+          <div class="metric"><span data-i18n="metricMaterials">Materials</span><strong id="metricMaterials">0</strong></div>
+          <div class="metric"><span data-i18n="metricExams">Exams Taken</span><strong id="metricExams">0</strong></div>
+          <div class="metric"><span data-i18n="metricScore">Average Score</span><strong id="metricScore">0%</strong></div>
         </div>
 
         <div class="two-column">
           <section class="panel">
             <div class="panel-head">
-              <h2>Continue Learning</h2>
-              <button class="secondary" data-view-jump="study">Open Prep</button>
+              <h2 data-i18n="continueLearning">Continue Learning</h2>
+              <button class="secondary" data-view-jump="study" data-i18n="openPrep">Open Prep</button>
             </div>
             <div id="recentSessions" class="stack"></div>
           </section>
 
           <section class="panel">
             <div class="panel-head">
-              <h2>AI Recommendations</h2>
-              <button class="secondary" id="refreshAdviceBtn">Refresh</button>
+              <h2 data-i18n="aiRecommendations">AI Recommendations</h2>
+              <button class="secondary" id="refreshAdviceBtn" data-i18n="refresh">Refresh</button>
             </div>
             <div id="recommendations" class="stack"></div>
           </section>
@@ -96,10 +120,10 @@
       <section class="view" id="classesView">
         <div class="section-head">
           <div>
-            <p class="eyebrow">Course memory</p>
-            <h2>Classes</h2>
+            <p class="eyebrow" data-i18n="courseMemory">Course memory</p>
+            <h2 data-i18n="navClasses">Classes</h2>
           </div>
-          <button class="primary large-action" id="addClassBtn">Add Class</button>
+          <button class="primary large-action" id="addClassBtn" data-i18n="addClass">Add Class</button>
         </div>
         <div id="classGrid" class="class-grid"></div>
       </section>
@@ -107,25 +131,25 @@
       <section class="view" id="materialsView">
         <div class="section-head">
           <div>
-            <p class="eyebrow">RAG-ready library</p>
-            <h2>Materials</h2>
+            <p class="eyebrow" data-i18n="ragLibrary">RAG-ready library</p>
+            <h2 data-i18n="navMaterials">Materials</h2>
           </div>
         </div>
         <div class="panel">
           <form id="materialForm" class="form-grid">
-            <label>Class<select id="materialClass"></select></label>
-            <label>Material type
+            <label><span data-i18n="classLabel">Class</span><select id="materialClass"></select></label>
+            <label><span data-i18n="materialType">Material type</span>
               <select id="materialType">
-                <option>Lecture slides</option>
-                <option>Book chapter</option>
-                <option>Assignment sheet</option>
-                <option>Past exam</option>
-                <option>Notes</option>
+                <option value="Lecture slides" data-i18n="lectureSlides">Lecture slides</option>
+                <option value="Book chapter" data-i18n="bookChapter">Book chapter</option>
+                <option value="Assignment sheet" data-i18n="assignmentSheet">Assignment sheet</option>
+                <option value="Past exam" data-i18n="pastExam">Past exam</option>
+                <option value="Notes" data-i18n="notes">Notes</option>
               </select>
             </label>
-            <label class="wide">Upload files<input id="materialFiles" type="file" multiple></label>
-            <label class="wide">Notes<textarea id="materialNotes" placeholder="Optional: chapter, lecture number, important topics..."></textarea></label>
-            <button class="primary" type="submit">Save Materials</button>
+            <label class="wide"><span data-i18n="uploadFiles">Upload files</span><input id="materialFiles" type="file" multiple></label>
+            <label class="wide"><span data-i18n="notes">Notes</span><textarea id="materialNotes" data-i18n-placeholder="materialNotesPlaceholder" placeholder="Optional: chapter, lecture number, important topics..."></textarea></label>
+            <button class="primary" type="submit" data-i18n="saveMaterials">Save Materials</button>
           </form>
         </div>
         <div id="materialsList" class="material-list"></div>
@@ -135,43 +159,43 @@
         <div class="study-layout">
           <section class="panel">
             <div class="panel-head">
-              <h2>Daily Class Preparation</h2>
-              <span class="pill">Tutor Mode</span>
+              <h2 data-i18n="dailyClassPreparation">Daily Class Preparation</h2>
+              <span class="pill" data-i18n="tutorMode">Tutor Mode</span>
             </div>
             <form id="studyForm" class="stack">
-              <label>Class<select id="studyClass"></select></label>
-              <label>Topic<input id="studyTopic" placeholder="Example: CNNs, backpropagation, database indexing"></label>
+              <label><span data-i18n="classLabel">Class</span><select id="studyClass"></select></label>
+              <label><span data-i18n="topic">Topic</span><input id="studyTopic" data-i18n-placeholder="topicPlaceholder" placeholder="Example: CNNs, backpropagation, database indexing"></label>
               <div class="choice-grid">
-                <label><span>Material mode</span><select id="studyMaterialMode"><option>With materials</option><option>Without materials</option></select></label>
-                <label><span>Knowledge level</span><select id="studyKnowledge"><option>Start from scratch</option><option>I know basics</option><option>Advanced learner</option></select></label>
-                <label><span>Explanation</span><select id="studyExplanation"><option>Simple language</option><option>Medium level</option><option>Academic level</option></select></label>
-                <label><span>Session length</span><select id="studyLength"><option>15 minutes</option><option>30 minutes</option><option>60 minutes</option></select></label>
+                <label><span data-i18n="materialMode">Material mode</span><select id="studyMaterialMode"><option value="With materials" data-i18n="withMaterials">With materials</option><option value="Without materials" data-i18n="withoutMaterials">Without materials</option></select></label>
+                <label><span data-i18n="knowledgeLevel">Knowledge level</span><select id="studyKnowledge"><option value="Start from scratch" data-i18n="startFromScratch">Start from scratch</option><option value="I know basics" data-i18n="knowBasics">I know basics</option><option value="Advanced learner" data-i18n="advancedLearner">Advanced learner</option></select></label>
+                <label><span data-i18n="explanation">Explanation</span><select id="studyExplanation"><option value="Simple language" data-i18n="simpleLanguage">Simple language</option><option value="Medium level" data-i18n="mediumLevel">Medium level</option><option value="Academic level" data-i18n="academicLevel">Academic level</option></select></label>
+                <label><span data-i18n="sessionLength">Session length</span><select id="studyLength"><option value="15 minutes" data-i18n="minutes15">15 minutes</option><option value="30 minutes" data-i18n="minutes30">30 minutes</option><option value="60 minutes" data-i18n="minutes60">60 minutes</option></select></label>
               </div>
-              <button class="primary" type="submit">Generate Preparation</button>
+              <button class="primary" type="submit" data-i18n="generatePreparation">Generate Preparation</button>
             </form>
           </section>
 
           <section class="panel output-panel">
             <div class="panel-head">
-              <h2>Preparation Plan</h2>
+              <h2 data-i18n="preparationPlan">Preparation Plan</h2>
               <div class="panel-actions">
-                <button class="secondary" id="saveStudyBtn">Save</button>
-                <button class="primary" id="startChatBtn" disabled>Start AI Chatbot</button>
+                <button class="secondary" id="saveStudyBtn" data-i18n="save">Save</button>
+                <button class="primary" id="startChatBtn" disabled data-i18n="startAiChatbot">Start AI Chatbot</button>
               </div>
             </div>
-            <div id="studyOutput" class="lesson-output empty-state">Choose a class and topic. StudyAI will build a compact lesson, examples, mistakes, and practice questions.</div>
+            <div id="studyOutput" class="lesson-output empty-state" data-i18n="studyOutputEmpty">Choose a class and topic. StudyAI will build a compact lesson, examples, mistakes, and practice questions.</div>
             <div id="studyChatPanel" class="chat-panel" hidden>
               <div class="chat-head">
                 <div>
-                  <span class="label">Preparation chatbot</span>
+                  <span class="label" data-i18n="preparationChatbot">Preparation chatbot</span>
                   <strong id="chatTopicLabel">Ask follow-up questions</strong>
                 </div>
                 <span class="pill" id="chatModelLabel">AI tutor</span>
               </div>
               <div id="chatMessages" class="chat-messages"></div>
               <form id="chatForm" class="chat-form">
-                <input id="chatInput" placeholder="Ask about this preparation plan..." autocomplete="off">
-                <button class="primary" type="submit">Send</button>
+                <input id="chatInput" data-i18n-placeholder="chatPlaceholder" placeholder="Ask about this preparation plan..." autocomplete="off">
+                <button class="primary" type="submit" data-i18n="send">Send</button>
               </form>
             </div>
           </section>
@@ -182,31 +206,31 @@
         <div class="two-column">
           <section class="panel">
             <div class="panel-head">
-              <h2>Exam Configuration</h2>
-              <span class="pill">Adaptive</span>
+              <h2 data-i18n="examConfiguration">Exam Configuration</h2>
+              <span class="pill" data-i18n="adaptive">Adaptive</span>
             </div>
             <form id="examForm" class="stack">
-              <label>Class<select id="examClass"></select></label>
-              <label>Topics<input id="examTopics" placeholder="Comma separated topics"></label>
+              <label><span data-i18n="classLabel">Class</span><select id="examClass"></select></label>
+              <label><span data-i18n="topics">Topics</span><input id="examTopics" data-i18n-placeholder="topicsPlaceholder" placeholder="Comma separated topics"></label>
               <div class="form-grid compact">
-                <label>Difficulty<select id="examDifficulty"><option>Easy</option><option selected>Medium</option><option>Hard</option><option>Very hard</option></select></label>
-                <label>Duration minutes<input id="examDuration" type="number" min="5" value="30"></label>
-                <label>Single choice<input id="singleCount" type="number" min="0" value="4"></label>
-                <label>Multiple choice<input id="multipleCount" type="number" min="0" value="2"></label>
-                <label>Open theory<input id="openCount" type="number" min="0" value="2"></label>
-                <label>Coding/practical<input id="codingCount" type="number" min="0" value="1"></label>
+                <label><span data-i18n="difficulty">Difficulty</span><select id="examDifficulty"><option value="Easy" data-i18n="easy">Easy</option><option value="Medium" selected data-i18n="medium">Medium</option><option value="Hard" data-i18n="hard">Hard</option><option value="Very hard" data-i18n="veryHard">Very hard</option></select></label>
+                <label><span data-i18n="durationMinutes">Duration minutes</span><input id="examDuration" type="number" min="5" value="30"></label>
+                <label><span data-i18n="singleChoice">Single choice</span><input id="singleCount" type="number" min="0" value="4"></label>
+                <label><span data-i18n="multipleChoice">Multiple choice</span><input id="multipleCount" type="number" min="0" value="2"></label>
+                <label><span data-i18n="openTheory">Open theory</span><input id="openCount" type="number" min="0" value="2"></label>
+                <label><span data-i18n="codingPractical">Coding/practical</span><input id="codingCount" type="number" min="0" value="1"></label>
               </div>
-              <label>Extra teacher rules<textarea id="examRules" placeholder="Example: focus on definitions, include calculation, no code, use uploaded slides only..."></textarea></label>
-              <button class="primary" type="submit">Create Exam Sheet</button>
+              <label><span data-i18n="extraRules">Extra teacher rules</span><textarea id="examRules" data-i18n-placeholder="extraRulesPlaceholder" placeholder="Example: focus on definitions, include calculation, no code, use uploaded slides only..."></textarea></label>
+              <button class="primary" type="submit" data-i18n="createExamSheet">Create Exam Sheet</button>
             </form>
           </section>
 
           <section class="panel">
             <div class="panel-head">
-              <h2>Generated Exam</h2>
-              <button class="primary" id="startExamBtn" disabled>Start Exam</button>
+              <h2 data-i18n="generatedExam">Generated Exam</h2>
+              <button class="primary" id="startExamBtn" disabled data-i18n="startExam">Start Exam</button>
             </div>
-            <div id="examPreview" class="exam-preview empty-state">No exam generated yet.</div>
+            <div id="examPreview" class="exam-preview empty-state" data-i18n="noExamYet">No exam generated yet.</div>
           </section>
         </div>
       </section>
@@ -214,22 +238,22 @@
       <section class="view" id="examRoomView">
         <div class="exam-topline">
           <div>
-            <p class="eyebrow">Practical exam mode</p>
+            <p class="eyebrow" data-i18n="practicalExamMode">Practical exam mode</p>
             <h2 id="examRoomTitle">Exam</h2>
           </div>
           <div class="timer" id="examTimer">00:00</div>
         </div>
         <form id="examAnswerForm" class="exam-sheet"></form>
         <div class="submit-row">
-          <button class="danger" id="submitExamBtn">Submit Exam</button>
+          <button class="danger" id="submitExamBtn" data-i18n="submitExam">Submit Exam</button>
         </div>
       </section>
 
       <section class="view" id="resultsView">
         <div class="section-head">
           <div>
-            <p class="eyebrow">After submission</p>
-            <h2>Results and Recovery Plan</h2>
+            <p class="eyebrow" data-i18n="afterSubmission">After submission</p>
+            <h2 data-i18n="resultsRecovery">Results and Recovery Plan</h2>
           </div>
         </div>
         <div id="resultOutput" class="stack"></div>
@@ -239,24 +263,24 @@
         <div class="assignment-layout">
           <section class="panel">
             <div class="panel-head">
-              <h2>Assignment Session</h2>
-              <span class="pill">Guided</span>
+              <h2 data-i18n="assignmentSession">Assignment Session</h2>
+              <span class="pill" data-i18n="guided">Guided</span>
             </div>
             <form id="assignmentForm" class="stack">
-              <label>Class<select id="assignmentClass"></select></label>
-              <label>Assignment title<input id="assignmentTitle" placeholder="Example: Implement CNN classifier"></label>
-              <label>Course details<textarea id="assignmentDetails" placeholder="Paste requirements, rules, expected output, language, deadline..."></textarea></label>
-              <label>Mode<select id="assignmentMode"><option>Guided solution</option><option>Hint mode</option><option>Debug my code</option><option>Final review</option></select></label>
-              <button class="primary" type="submit">Create Step Plan</button>
+              <label><span data-i18n="classLabel">Class</span><select id="assignmentClass"></select></label>
+              <label><span data-i18n="assignmentTitle">Assignment title</span><input id="assignmentTitle" data-i18n-placeholder="assignmentTitlePlaceholder" placeholder="Example: Implement CNN classifier"></label>
+              <label><span data-i18n="courseDetails">Course details</span><textarea id="assignmentDetails" data-i18n-placeholder="courseDetailsPlaceholder" placeholder="Paste requirements, rules, expected output, language, deadline..."></textarea></label>
+              <label><span data-i18n="mode">Mode</span><select id="assignmentMode"><option value="Guided solution" data-i18n="guidedSolution">Guided solution</option><option value="Hint mode" data-i18n="hintMode">Hint mode</option><option value="Debug my code" data-i18n="debugCode">Debug my code</option><option value="Final review" data-i18n="finalReview">Final review</option></select></label>
+              <button class="primary" type="submit" data-i18n="createStepPlan">Create Step Plan</button>
             </form>
           </section>
 
           <section class="panel">
             <div class="panel-head">
-              <h2>Step-by-Step Workspace</h2>
-              <button class="secondary" id="nextStepBtn" disabled>Next Step</button>
+              <h2 data-i18n="stepWorkspace">Step-by-Step Workspace</h2>
+              <button class="secondary" id="nextStepBtn" disabled data-i18n="nextStep">Next Step</button>
             </div>
-            <div id="assignmentSteps" class="steps empty-state">Create an assignment plan. StudyAI will reveal one useful part at a time, with explanation beside the code or answer.</div>
+            <div id="assignmentSteps" class="steps empty-state" data-i18n="assignmentStepsEmpty">Create an assignment plan. StudyAI will reveal one useful part at a time, with explanation beside the code or answer.</div>
           </section>
         </div>
       </section>
@@ -264,8 +288,8 @@
       <section class="view" id="statisticsView">
         <div class="section-head">
           <div>
-            <p class="eyebrow">Learning analytics</p>
-            <h2>Statistics</h2>
+            <p class="eyebrow" data-i18n="learningAnalytics">Learning analytics</p>
+            <h2 data-i18n="navStatistics">Statistics</h2>
           </div>
         </div>
         <div id="statsGrid" class="stats-grid"></div>
@@ -278,27 +302,27 @@
             <div class="info-main-icon">i</div>
           </div>
           <div>
-            <span class="theme-chip">AI study project</span>
-            <h2>About this website</h2>
-            <p>StudyAI is a personal AI learning workspace for preparing daily classes, final exams, and assignments in a more organized way. It lets users create classes, add study materials, choose whether they want to study with or without materials, select simple, medium, or academic explanations, generate preparation plans, practice exams, and step-by-step assignment sessions. The goal is not only to get answers, but to understand the topic, test knowledge, discover weak areas, and recover them with clear recommendations. I am Turgud Valiyev, and I created this website as an AI education project to support structured learning, exam preparation, and practical coding study.</p>
+            <span class="theme-chip" data-i18n="aiStudyProject">AI study project</span>
+            <h2 data-i18n="aboutTitle">About this website</h2>
+            <p data-i18n="aboutText">StudyAI is a personal AI learning workspace for preparing daily classes, final exams, and assignments in a more organized way. It lets users create classes, add study materials, choose whether they want to study with or without materials, select simple, medium, or academic explanations, generate preparation plans, practice exams, and step-by-step assignment sessions. The goal is not only to get answers, but to understand the topic, test knowledge, discover weak areas, and recover them with clear recommendations. I am Turgud Valiyev, and I created this website as an AI education project to support structured learning, exam preparation, and practical coding study.</p>
           </div>
         </div>
 
         <div class="info-card-grid">
           <section class="info-card">
             <div class="info-card-icon">1</div>
-            <h3>Prepare</h3>
-            <p>Create class-based study sessions with the right explanation level and prerequisite support.</p>
+            <h3 data-i18n="prepare">Prepare</h3>
+            <p data-i18n="prepareText">Create class-based study sessions with the right explanation level and prerequisite support.</p>
           </section>
           <section class="info-card">
             <div class="info-card-icon">2</div>
-            <h3>Practice</h3>
-            <p>Generate timed exams with different question styles, difficulty levels, and result feedback.</p>
+            <h3 data-i18n="practice">Practice</h3>
+            <p data-i18n="practiceText">Generate timed exams with different question styles, difficulty levels, and result feedback.</p>
           </section>
           <section class="info-card">
             <div class="info-card-icon">3</div>
-            <h3>Improve</h3>
-            <p>Use statistics, weak-topic signals, and guided assignment steps to learn more deeply.</p>
+            <h3 data-i18n="improve">Improve</h3>
+            <p data-i18n="improveText">Use statistics, weak-topic signals, and guided assignment steps to learn more deeply.</p>
           </section>
         </div>
       </section>
@@ -310,20 +334,20 @@
             <div class="info-main-icon">@</div>
           </div>
           <div>
-            <span class="theme-chip">Contact</span>
-            <h2>Contact Turgud Valiyev</h2>
-            <p>For questions, research discussion, collaboration, or feedback about StudyAI, use the contact channels below.</p>
+            <span class="theme-chip" data-i18n="navContact">Contact</span>
+            <h2 data-i18n="contactTitle">Contact Turgud Valiyev</h2>
+            <p data-i18n="contactText">For questions, research discussion, collaboration, or feedback about StudyAI, use the contact channels below.</p>
           </div>
         </div>
 
         <div class="contact-grid">
           <a class="contact-card" href="mailto:turgud.valiyev2002@gmail.com">
             <span class="contact-icon">M</span>
-            <span><strong>Mail</strong><small>turgud.valiyev2002@gmail.com</small></span>
+            <span><strong data-i18n="mail">Mail</strong><small>turgud.valiyev2002@gmail.com</small></span>
           </a>
           <a class="contact-card" href="tel:+4368184218262">
             <span class="contact-icon">P</span>
-            <span><strong>Phone</strong><small>+4368184218262</small></span>
+            <span><strong data-i18n="phone">Phone</strong><small>+4368184218262</small></span>
           </a>
           <a class="contact-card" href="https://www.linkedin.com/in/turgud-valiyev-37259120b/" target="_blank" rel="noopener">
             <span class="contact-icon">in</span>
@@ -339,15 +363,15 @@
       <section class="view" id="settingsView">
         <div class="panel narrow">
           <div class="panel-head">
-            <h2>Settings</h2>
-            <span class="pill">Local prototype</span>
+            <h2 data-i18n="navSettings">Settings</h2>
+            <span class="pill" data-i18n="localPrototype">Local prototype</span>
           </div>
           <form id="settingsForm" class="stack">
-            <label>Your name<input id="settingName" placeholder="Dear Turgud"></label>
-            <label>Default explanation level<select id="settingExplanation"><option>Simple language</option><option>Medium level</option><option>Academic level</option></select></label>
-            <label>Default exam difficulty<select id="settingDifficulty"><option>Easy</option><option>Medium</option><option>Hard</option><option>Very hard</option></select></label>
-            <label>AI backend endpoint<input id="settingAiEndpoint" placeholder="https://your-vercel-app.vercel.app/api/studyai"></label>
-            <button class="primary" type="submit">Save Settings</button>
+            <label><span data-i18n="yourName">Your name</span><input id="settingName" placeholder="Dear Turgud"></label>
+            <label><span data-i18n="defaultExplanation">Default explanation level</span><select id="settingExplanation"><option value="Simple language" data-i18n="simpleLanguage">Simple language</option><option value="Medium level" data-i18n="mediumLevel">Medium level</option><option value="Academic level" data-i18n="academicLevel">Academic level</option></select></label>
+            <label><span data-i18n="defaultDifficulty">Default exam difficulty</span><select id="settingDifficulty"><option value="Easy" data-i18n="easy">Easy</option><option value="Medium" data-i18n="medium">Medium</option><option value="Hard" data-i18n="hard">Hard</option><option value="Very hard" data-i18n="veryHard">Very hard</option></select></label>
+            <label><span data-i18n="aiBackendEndpoint">AI backend endpoint</span><input id="settingAiEndpoint" placeholder="https://your-vercel-app.vercel.app/api/studyai"></label>
+            <button class="primary" type="submit" data-i18n="saveSettings">Save Settings</button>
           </form>
         </div>
       </section>
@@ -357,24 +381,24 @@
   <dialog id="classDialog">
     <form id="classForm" method="dialog" class="modal-card">
       <div class="panel-head">
-        <h2>New Class</h2>
+        <h2 data-i18n="newClass">New Class</h2>
         <button class="icon-button" value="cancel" type="submit">Ã—</button>
       </div>
-      <label>Class name<input id="className" required placeholder="Machine Learning"></label>
-      <label>Level<select id="classLevel"><option>Bachelor</option><option>Master</option><option selected>PhD</option><option>Professional</option></select></label>
-      <label>Main goal<select id="classGoal"><option>Daily class preparation</option><option>Final exam preparation</option><option>Assignments and coding</option><option>Research reading</option></select></label>
-      <label>Main topics<textarea id="classTopics" placeholder="Comma separated: CNN, RNN, transformers..."></textarea></label>
-      <button class="primary" type="submit">Create Class</button>
+      <label><span data-i18n="className">Class name</span><input id="className" required placeholder="Machine Learning"></label>
+      <label><span data-i18n="level">Level</span><select id="classLevel"><option value="Bachelor" data-i18n="bachelor">Bachelor</option><option value="Master" data-i18n="master">Master</option><option value="PhD" selected data-i18n="phd">PhD</option><option value="Professional" data-i18n="professional">Professional</option></select></label>
+      <label><span data-i18n="mainGoal">Main goal</span><select id="classGoal"><option value="Daily class preparation" data-i18n="dailyClassPreparation">Daily class preparation</option><option value="Final exam preparation" data-i18n="finalExamPreparation">Final exam preparation</option><option value="Assignments and coding" data-i18n="assignmentsCoding">Assignments and coding</option><option value="Research reading" data-i18n="researchReading">Research reading</option></select></label>
+      <label><span data-i18n="mainTopics">Main topics</span><textarea id="classTopics" data-i18n-placeholder="mainTopicsPlaceholder" placeholder="Comma separated: CNN, RNN, transformers..."></textarea></label>
+      <button class="primary" type="submit" data-i18n="createClass">Create Class</button>
     </form>
   </dialog>
 
   <dialog id="confirmDialog">
     <form method="dialog" class="modal-card">
-      <h2>Submit exam?</h2>
-      <p>The exam will end and no modifications can be made anymore.</p>
+      <h2 data-i18n="submitExamQuestion">Submit exam?</h2>
+      <p data-i18n="submitExamWarning">The exam will end and no modifications can be made anymore.</p>
       <div class="submit-row">
-        <button class="secondary" value="cancel">Cancel</button>
-        <button class="danger" value="confirm">Submit</button>
+        <button class="secondary" value="cancel" data-i18n="cancel">Cancel</button>
+        <button class="danger" value="confirm" data-i18n="submit">Submit</button>
       </div>
     </form>
   </dialog>

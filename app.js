@@ -17,6 +17,506 @@ let chatMessages = [];
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
+const LANGUAGES = {
+  en: "English",
+  de: "Deutsch",
+  ru: "Русский",
+  tr: "Türkçe"
+};
+
+const TRANSLATIONS = {
+  en: {
+    languageEyebrow: "Before StudyAI opens",
+    languageTitle: "The tiny study coach is warming up.",
+    languageFunny: "This animal has read zero pages today, but somehow still looks confident.",
+    languagePrompt: "Select your language for learning.",
+    enterApp: "Open StudyAI",
+    languageButton: "Language",
+    brandSubtitle: "Adaptive study workspace",
+    currentClass: "Current class",
+    newClass: "New Class",
+    startStudySession: "Start Study Session",
+    darkMode: "Dark mode",
+    lightMode: "Light mode",
+    navDashboard: "Dashboard",
+    navClasses: "Classes",
+    navMaterials: "Materials",
+    navStudy: "Daily Prep",
+    navExamBuilder: "Exam Builder",
+    navAssignments: "Assignments",
+    navStatistics: "Statistics",
+    navAbout: "About",
+    navContact: "Contact",
+    navSettings: "Settings",
+    appEyebrow: "Personal AI study, exam, and assignment tutor",
+    heroEyebrow: "Dear Turgud, build target",
+    heroTitle: "StudyAI remembers each class, learns from materials, creates exams, and teaches assignments step by step.",
+    heroText: "The first version below is a functional prototype. It uses local persistence now, and its structure is ready for Firebase Auth, Firestore, Storage, and a RAG backend.",
+    todayFocusLabel: "Today focus",
+    createFirstClass: "Create your first class",
+    uploadOrStart: "Then upload materials or start without material.",
+    continueClass: "Continue {name}",
+    goalTopics: "Goal: {goal}. Topics: {topics}.",
+    notDefined: "not defined",
+    metricClasses: "Classes",
+    metricMaterials: "Materials",
+    metricExams: "Exams Taken",
+    metricScore: "Average Score",
+    continueLearning: "Continue Learning",
+    openPrep: "Open Prep",
+    aiRecommendations: "AI Recommendations",
+    refresh: "Refresh",
+    noSessions: "No sessions yet. Start a daily preparation session.",
+    courseMemory: "Course memory",
+    addClass: "Add Class",
+    ragLibrary: "RAG-ready library",
+    classLabel: "Class",
+    materialType: "Material type",
+    lectureSlides: "Lecture slides",
+    bookChapter: "Book chapter",
+    assignmentSheet: "Assignment sheet",
+    pastExam: "Past exam",
+    notes: "Notes",
+    uploadFiles: "Upload files",
+    materialNotesPlaceholder: "Optional: chapter, lecture number, important topics...",
+    saveMaterials: "Save Materials",
+    noMaterials: "No materials yet. Upload slides, books, notes, or assignment sheets.",
+    dailyClassPreparation: "Daily Class Preparation",
+    tutorMode: "Tutor Mode",
+    topic: "Topic",
+    topicPlaceholder: "Example: CNNs, backpropagation, database indexing",
+    materialMode: "Material mode",
+    withMaterials: "With materials",
+    withoutMaterials: "Without materials",
+    knowledgeLevel: "Knowledge level",
+    startFromScratch: "Start from scratch",
+    knowBasics: "I know basics",
+    advancedLearner: "Advanced learner",
+    explanation: "Explanation",
+    simpleLanguage: "Simple language",
+    mediumLevel: "Medium level",
+    academicLevel: "Academic level",
+    sessionLength: "Session length",
+    minutes15: "15 minutes",
+    minutes30: "30 minutes",
+    minutes60: "60 minutes",
+    generatePreparation: "Generate Preparation",
+    preparationPlan: "Preparation Plan",
+    save: "Save",
+    startAiChatbot: "Start AI Chatbot",
+    studyOutputEmpty: "Choose a class and topic. StudyAI will build a compact lesson, examples, mistakes, and practice questions.",
+    preparationChatbot: "Preparation chatbot",
+    askFollowUp: "Ask follow-up questions",
+    chatPlaceholder: "Ask about this preparation plan...",
+    send: "Send",
+    examConfiguration: "Exam Configuration",
+    adaptive: "Adaptive",
+    topics: "Topics",
+    topicsPlaceholder: "Comma separated topics",
+    difficulty: "Difficulty",
+    easy: "Easy",
+    medium: "Medium",
+    hard: "Hard",
+    veryHard: "Very hard",
+    durationMinutes: "Duration minutes",
+    singleChoice: "Single choice",
+    multipleChoice: "Multiple choice",
+    openTheory: "Open theory",
+    codingPractical: "Coding/practical",
+    extraRules: "Extra teacher rules",
+    extraRulesPlaceholder: "Example: focus on definitions, include calculation, no code, use uploaded slides only...",
+    createExamSheet: "Create Exam Sheet",
+    generatedExam: "Generated Exam",
+    startExam: "Start Exam",
+    noExamYet: "No exam generated yet.",
+    practicalExamMode: "Practical exam mode",
+    submitExam: "Submit Exam",
+    afterSubmission: "After submission",
+    resultsRecovery: "Results and Recovery Plan",
+    assignmentSession: "Assignment Session",
+    guided: "Guided",
+    assignmentTitle: "Assignment title",
+    assignmentTitlePlaceholder: "Example: Implement CNN classifier",
+    courseDetails: "Course details",
+    courseDetailsPlaceholder: "Paste requirements, rules, expected output, language, deadline...",
+    mode: "Mode",
+    guidedSolution: "Guided solution",
+    hintMode: "Hint mode",
+    debugCode: "Debug my code",
+    finalReview: "Final review",
+    createStepPlan: "Create Step Plan",
+    stepWorkspace: "Step-by-Step Workspace",
+    nextStep: "Next Step",
+    assignmentStepsEmpty: "Create an assignment plan. StudyAI will reveal one useful part at a time, with explanation beside the code or answer.",
+    learningAnalytics: "Learning analytics",
+    aiStudyProject: "AI study project",
+    aboutTitle: "About this website",
+    aboutText: "StudyAI is a personal AI learning workspace for preparing daily classes, final exams, and assignments in a more organized way. It lets users create classes, add study materials, choose whether they want to study with or without materials, select simple, medium, or academic explanations, generate preparation plans, practice exams, and step-by-step assignment sessions. The goal is not only to get answers, but to understand the topic, test knowledge, discover weak areas, and recover them with clear recommendations. I am Turgud Valiyev, and I created this website as an AI education project to support structured learning, exam preparation, and practical coding study.",
+    prepare: "Prepare",
+    prepareText: "Create class-based study sessions with the right explanation level and prerequisite support.",
+    practice: "Practice",
+    practiceText: "Generate timed exams with different question styles, difficulty levels, and result feedback.",
+    improve: "Improve",
+    improveText: "Use statistics, weak-topic signals, and guided assignment steps to learn more deeply.",
+    contactTitle: "Contact Turgud Valiyev",
+    contactText: "For questions, research discussion, collaboration, or feedback about StudyAI, use the contact channels below.",
+    mail: "Mail",
+    phone: "Phone",
+    localPrototype: "Local prototype",
+    yourName: "Your name",
+    defaultExplanation: "Default explanation level",
+    defaultDifficulty: "Default exam difficulty",
+    aiBackendEndpoint: "AI backend endpoint",
+    saveSettings: "Save Settings",
+    className: "Class name",
+    level: "Level",
+    bachelor: "Bachelor",
+    master: "Master",
+    phd: "PhD",
+    professional: "Professional",
+    mainGoal: "Main goal",
+    finalExamPreparation: "Final exam preparation",
+    assignmentsCoding: "Assignments and coding",
+    researchReading: "Research reading",
+    mainTopics: "Main topics",
+    mainTopicsPlaceholder: "Comma separated: CNN, RNN, transformers...",
+    createClass: "Create Class",
+    submitExamQuestion: "Submit exam?",
+    submitExamWarning: "The exam will end and no modifications can be made anymore.",
+    cancel: "Cancel",
+    submit: "Submit",
+    openClass: "Open Class",
+    noClasses: "No classes yet.",
+    classMetaTopics: "{count} topics",
+    classMetaMaterials: "{count} materials",
+    activeClass: "Active class",
+    studySessions: "Study sessions",
+    uploadedMaterials: "Uploaded materials",
+    averageScore: "Average score",
+    weakTopicSignal: "Weak topic signal",
+    questionHistory: "Question history",
+    noClass: "No class",
+    notEnoughExams: "Not enough exams"
+  }
+};
+
+TRANSLATIONS.de = {
+  ...TRANSLATIONS.en,
+  languageEyebrow: "Bevor StudyAI startet",
+  languageTitle: "Der kleine Lerncoach macht sich bereit.",
+  languageFunny: "Dieses Tier hat heute null Seiten gelesen, sieht aber trotzdem sehr selbstbewusst aus.",
+  languagePrompt: "Wähle deine Lernsprache.",
+  enterApp: "StudyAI öffnen",
+  languageButton: "Sprache",
+  brandSubtitle: "Adaptiver Lernarbeitsplatz",
+  currentClass: "Aktuelle Klasse",
+  newClass: "Neue Klasse",
+  startStudySession: "Lerneinheit starten",
+  darkMode: "Dunkelmodus",
+  lightMode: "Hellmodus",
+  navDashboard: "Dashboard",
+  navClasses: "Klassen",
+  navMaterials: "Materialien",
+  navStudy: "Tagesvorbereitung",
+  navExamBuilder: "Prüfung erstellen",
+  navAssignments: "Aufgaben",
+  navStatistics: "Statistik",
+  navAbout: "Über",
+  navContact: "Kontakt",
+  navSettings: "Einstellungen",
+  appEyebrow: "Persönlicher KI-Tutor für Lernen, Prüfungen und Aufgaben",
+  heroTitle: "StudyAI merkt sich jede Klasse, lernt aus Materialien, erstellt Prüfungen und führt Aufgaben Schritt für Schritt.",
+  heroText: "Diese Version ist ein funktionaler Prototyp. Sie nutzt lokale Speicherung und ist bereit für Firebase Auth, Firestore, Storage und ein RAG-Backend.",
+  todayFocusLabel: "Heutiger Fokus",
+  createFirstClass: "Erstelle deine erste Klasse",
+  uploadOrStart: "Lade danach Materialien hoch oder starte ohne Material.",
+  continueClass: "{name} fortsetzen",
+  goalTopics: "Ziel: {goal}. Themen: {topics}.",
+  metricMaterials: "Materialien",
+  metricExams: "Prüfungen",
+  metricScore: "Durchschnitt",
+  continueLearning: "Weiterlernen",
+  openPrep: "Vorbereitung öffnen",
+  aiRecommendations: "KI-Empfehlungen",
+  refresh: "Aktualisieren",
+  noSessions: "Noch keine Sitzungen. Starte eine Tagesvorbereitung.",
+  addClass: "Klasse hinzufügen",
+  ragLibrary: "RAG-bereite Bibliothek",
+  classLabel: "Klasse",
+  materialType: "Materialtyp",
+  lectureSlides: "Vorlesungsfolien",
+  bookChapter: "Buchkapitel",
+  assignmentSheet: "Aufgabenblatt",
+  pastExam: "Alte Prüfung",
+  notes: "Notizen",
+  uploadFiles: "Dateien hochladen",
+  saveMaterials: "Materialien speichern",
+  noMaterials: "Noch keine Materialien. Lade Folien, Bücher, Notizen oder Aufgabenblätter hoch.",
+  dailyClassPreparation: "Tagesvorbereitung",
+  tutorMode: "Tutor-Modus",
+  topic: "Thema",
+  materialMode: "Materialmodus",
+  withMaterials: "Mit Materialien",
+  withoutMaterials: "Ohne Materialien",
+  knowledgeLevel: "Vorwissen",
+  startFromScratch: "Von Grund auf starten",
+  knowBasics: "Ich kenne die Grundlagen",
+  advancedLearner: "Fortgeschritten",
+  explanation: "Erklärung",
+  simpleLanguage: "Einfache Sprache",
+  mediumLevel: "Mittleres Niveau",
+  academicLevel: "Akademisches Niveau",
+  sessionLength: "Sitzungslänge",
+  generatePreparation: "Vorbereitung erstellen",
+  preparationPlan: "Vorbereitungsplan",
+  save: "Speichern",
+  startAiChatbot: "KI-Chatbot starten",
+  send: "Senden",
+  examConfiguration: "Prüfungskonfiguration",
+  adaptive: "Adaptiv",
+  topics: "Themen",
+  difficulty: "Schwierigkeit",
+  easy: "Einfach",
+  medium: "Mittel",
+  hard: "Schwer",
+  veryHard: "Sehr schwer",
+  durationMinutes: "Dauer in Minuten",
+  singleChoice: "Einzelauswahl",
+  multipleChoice: "Mehrfachauswahl",
+  openTheory: "Offene Theorie",
+  codingPractical: "Coding/Praxis",
+  createExamSheet: "Prüfungsblatt erstellen",
+  generatedExam: "Erstellte Prüfung",
+  startExam: "Prüfung starten",
+  noExamYet: "Noch keine Prüfung erstellt.",
+  submitExam: "Prüfung abgeben",
+  assignmentSession: "Aufgabensitzung",
+  guided: "Geführt",
+  createStepPlan: "Schrittplan erstellen",
+  stepWorkspace: "Schritt-für-Schritt-Arbeitsbereich",
+  nextStep: "Nächster Schritt",
+  learningAnalytics: "Lernanalyse",
+  aboutTitle: "Über diese Website",
+  prepare: "Vorbereiten",
+  practice: "Üben",
+  improve: "Verbessern",
+  contactTitle: "Kontakt zu Turgud Valiyev",
+  contactText: "Für Fragen, Forschungsgespräche, Zusammenarbeit oder Feedback zu StudyAI nutze die folgenden Kontaktkanäle.",
+  phone: "Telefon",
+  saveSettings: "Einstellungen speichern",
+  createClass: "Klasse erstellen",
+  openClass: "Klasse öffnen",
+  noClasses: "Noch keine Klassen."
+};
+
+TRANSLATIONS.ru = {
+  ...TRANSLATIONS.en,
+  languageEyebrow: "Перед запуском StudyAI",
+  languageTitle: "Маленький учебный тренер разогревается.",
+  languageFunny: "Это животное сегодня не прочитало ни одной страницы, но выглядит очень уверенно.",
+  languagePrompt: "Выберите язык для обучения.",
+  enterApp: "Открыть StudyAI",
+  languageButton: "Язык",
+  brandSubtitle: "Адаптивное учебное пространство",
+  currentClass: "Текущий класс",
+  newClass: "Новый класс",
+  startStudySession: "Начать обучение",
+  darkMode: "Темная тема",
+  lightMode: "Светлая тема",
+  navDashboard: "Панель",
+  navClasses: "Классы",
+  navMaterials: "Материалы",
+  navStudy: "Подготовка",
+  navExamBuilder: "Экзамен",
+  navAssignments: "Задания",
+  navStatistics: "Статистика",
+  navAbout: "О проекте",
+  navContact: "Контакты",
+  navSettings: "Настройки",
+  appEyebrow: "Персональный AI tutor для учебы, экзаменов и заданий",
+  heroTitle: "StudyAI запоминает каждый класс, использует материалы, создает экзамены и ведет задания пошагово.",
+  heroText: "Это функциональный прототип. Сейчас он использует локальное хранение и готов к Firebase Auth, Firestore, Storage и RAG backend.",
+  todayFocusLabel: "Фокус сегодня",
+  createFirstClass: "Создайте первый класс",
+  uploadOrStart: "Затем загрузите материалы или начните без них.",
+  metricMaterials: "Материалы",
+  metricExams: "Экзамены",
+  metricScore: "Средний балл",
+  continueLearning: "Продолжить обучение",
+  openPrep: "Открыть подготовку",
+  aiRecommendations: "AI-рекомендации",
+  refresh: "Обновить",
+  noSessions: "Сессий пока нет. Начните подготовку.",
+  addClass: "Добавить класс",
+  classLabel: "Класс",
+  materialType: "Тип материала",
+  lectureSlides: "Слайды лекции",
+  bookChapter: "Глава книги",
+  assignmentSheet: "Лист задания",
+  pastExam: "Прошлый экзамен",
+  notes: "Заметки",
+  uploadFiles: "Загрузить файлы",
+  saveMaterials: "Сохранить материалы",
+  dailyClassPreparation: "Подготовка к занятию",
+  tutorMode: "Режим tutor",
+  topic: "Тема",
+  materialMode: "Режим материалов",
+  withMaterials: "С материалами",
+  withoutMaterials: "Без материалов",
+  knowledgeLevel: "Уровень знаний",
+  startFromScratch: "Начать с нуля",
+  knowBasics: "Я знаю основы",
+  advancedLearner: "Продвинутый уровень",
+  explanation: "Объяснение",
+  simpleLanguage: "Простой язык",
+  mediumLevel: "Средний уровень",
+  academicLevel: "Академический уровень",
+  generatePreparation: "Создать подготовку",
+  preparationPlan: "План подготовки",
+  save: "Сохранить",
+  startAiChatbot: "Запустить AI чат",
+  send: "Отправить",
+  examConfiguration: "Настройка экзамена",
+  difficulty: "Сложность",
+  easy: "Легко",
+  medium: "Средне",
+  hard: "Сложно",
+  veryHard: "Очень сложно",
+  createExamSheet: "Создать экзамен",
+  generatedExam: "Созданный экзамен",
+  startExam: "Начать экзамен",
+  submitExam: "Сдать экзамен",
+  assignmentSession: "Сессия задания",
+  createStepPlan: "Создать план шагов",
+  stepWorkspace: "Пошаговая работа",
+  nextStep: "Следующий шаг",
+  learningAnalytics: "Аналитика обучения",
+  aboutTitle: "Об этом сайте",
+  prepare: "Готовиться",
+  practice: "Практиковаться",
+  improve: "Улучшаться",
+  contactTitle: "Связаться с Turgud Valiyev",
+  phone: "Телефон",
+  saveSettings: "Сохранить настройки",
+  createClass: "Создать класс",
+  openClass: "Открыть класс",
+  noClasses: "Классов пока нет."
+};
+
+TRANSLATIONS.tr = {
+  ...TRANSLATIONS.en,
+  languageEyebrow: "StudyAI açılmadan önce",
+  languageTitle: "Küçük çalışma koçu hazırlanıyor.",
+  languageFunny: "Bu hayvan bugün sıfır sayfa okudu ama yine de çok özgüvenli görünüyor.",
+  languagePrompt: "Öğrenme dilini seç.",
+  enterApp: "StudyAI'ı Aç",
+  languageButton: "Dil",
+  brandSubtitle: "Uyarlanabilir çalışma alanı",
+  currentClass: "Aktif ders",
+  newClass: "Yeni Ders",
+  startStudySession: "Çalışma Başlat",
+  darkMode: "Karanlık mod",
+  lightMode: "Aydınlık mod",
+  navDashboard: "Panel",
+  navClasses: "Dersler",
+  navMaterials: "Materyaller",
+  navStudy: "Günlük Hazırlık",
+  navExamBuilder: "Sınav Oluştur",
+  navAssignments: "Ödevler",
+  navStatistics: "İstatistik",
+  navAbout: "Hakkında",
+  navContact: "İletişim",
+  navSettings: "Ayarlar",
+  appEyebrow: "Kişisel AI çalışma, sınav ve ödev asistanı",
+  heroTitle: "StudyAI her dersi hatırlar, materyallerden öğrenir, sınav oluşturur ve ödevleri adım adım öğretir.",
+  heroText: "Bu ilk sürüm çalışan bir prototiptir. Şimdilik local storage kullanır ve Firebase Auth, Firestore, Storage ve RAG backend için hazırdır.",
+  todayFocusLabel: "Bugünkü odak",
+  createFirstClass: "İlk dersini oluştur",
+  uploadOrStart: "Sonra materyal yükle veya materyalsiz başla.",
+  metricMaterials: "Materyaller",
+  metricExams: "Sınavlar",
+  metricScore: "Ortalama skor",
+  continueLearning: "Öğrenmeye Devam Et",
+  openPrep: "Hazırlığı Aç",
+  aiRecommendations: "AI Önerileri",
+  refresh: "Yenile",
+  noSessions: "Henüz oturum yok. Günlük hazırlık başlat.",
+  addClass: "Ders Ekle",
+  courseMemory: "Ders hafızası",
+  ragLibrary: "RAG hazır kütüphane",
+  classLabel: "Ders",
+  materialType: "Materyal türü",
+  lectureSlides: "Ders slaytları",
+  bookChapter: "Kitap bölümü",
+  assignmentSheet: "Ödev kağıdı",
+  pastExam: "Geçmiş sınav",
+  notes: "Notlar",
+  uploadFiles: "Dosya yükle",
+  saveMaterials: "Materyalleri Kaydet",
+  noMaterials: "Henüz materyal yok. Slayt, kitap, not veya ödev kağıdı yükle.",
+  dailyClassPreparation: "Günlük Ders Hazırlığı",
+  tutorMode: "Tutor Modu",
+  topic: "Konu",
+  materialMode: "Materyal modu",
+  withMaterials: "Materyallerle",
+  withoutMaterials: "Materyalsiz",
+  knowledgeLevel: "Bilgi seviyesi",
+  startFromScratch: "Sıfırdan başla",
+  knowBasics: "Temelleri biliyorum",
+  advancedLearner: "İleri seviye",
+  explanation: "Açıklama",
+  simpleLanguage: "Basit dil",
+  mediumLevel: "Orta seviye",
+  academicLevel: "Akademik seviye",
+  sessionLength: "Oturum süresi",
+  generatePreparation: "Hazırlık Oluştur",
+  preparationPlan: "Hazırlık Planı",
+  save: "Kaydet",
+  startAiChatbot: "AI Chatbot Başlat",
+  send: "Gönder",
+  examConfiguration: "Sınav Ayarları",
+  adaptive: "Uyarlanabilir",
+  topics: "Konular",
+  difficulty: "Zorluk",
+  easy: "Kolay",
+  medium: "Orta",
+  hard: "Zor",
+  veryHard: "Çok zor",
+  durationMinutes: "Süre dakika",
+  singleChoice: "Tek seçim",
+  multipleChoice: "Çoklu seçim",
+  openTheory: "Açık teori",
+  codingPractical: "Kodlama/pratik",
+  createExamSheet: "Sınav Kağıdı Oluştur",
+  generatedExam: "Oluşturulan Sınav",
+  startExam: "Sınavı Başlat",
+  noExamYet: "Henüz sınav oluşturulmadı.",
+  submitExam: "Sınavı Gönder",
+  assignmentSession: "Ödev Oturumu",
+  guided: "Rehberli",
+  assignmentTitle: "Ödev başlığı",
+  courseDetails: "Ders detayları",
+  mode: "Mod",
+  guidedSolution: "Rehberli çözüm",
+  hintMode: "İpucu modu",
+  debugCode: "Kodumu debug et",
+  finalReview: "Final kontrol",
+  createStepPlan: "Adım Planı Oluştur",
+  stepWorkspace: "Adım Adım Çalışma Alanı",
+  nextStep: "Sonraki Adım",
+  learningAnalytics: "Öğrenme analitiği",
+  aboutTitle: "Bu web sitesi hakkında",
+  prepare: "Hazırlan",
+  practice: "Pratik yap",
+  improve: "Geliştir",
+  contactTitle: "Turgud Valiyev ile iletişim",
+  phone: "Telefon",
+  saveSettings: "Ayarları Kaydet",
+  createClass: "Ders Oluştur",
+  openClass: "Dersi Aç",
+  noClasses: "Henüz ders yok."
+};
+
 const topicBank = {
   ai: ["machine learning", "deep learning", "neural networks", "computer vision", "llms", "rag", "federated learning", "edge ai"],
   cs: ["algorithms", "databases", "operating systems", "distributed systems", "software engineering", "security"],
@@ -79,6 +579,7 @@ function loadState() {
 
 function normalizeState() {
   state.settings ||= {};
+  if (!state.settings.language) state.settings.language = "en";
   if (!IS_LOCAL_HOST && state.settings.aiEndpoint === "/api/studyai") {
     state.settings.aiEndpoint = STUDYAI_API_URL;
     saveState();
@@ -87,6 +588,65 @@ function normalizeState() {
 
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function currentLanguage() {
+  return TRANSLATIONS[state.settings.language] ? state.settings.language : "en";
+}
+
+function t(key, replacements = {}) {
+  const dictionary = TRANSLATIONS[currentLanguage()] || TRANSLATIONS.en;
+  let value = dictionary[key] || TRANSLATIONS.en[key] || key;
+  Object.entries(replacements).forEach(([name, replacement]) => {
+    value = value.replaceAll(`{${name}}`, replacement);
+  });
+  return value;
+}
+
+function applyTranslations() {
+  document.documentElement.lang = currentLanguage();
+  $$("[data-i18n]").forEach((node) => {
+    node.textContent = t(node.dataset.i18n);
+  });
+  $$("[data-i18n-placeholder]").forEach((node) => {
+    node.placeholder = t(node.dataset.i18nPlaceholder);
+  });
+
+  const languageSelect = $("#languageSelect");
+  if (languageSelect) languageSelect.value = currentLanguage();
+  const languageButton = $("#languageButton");
+  if (languageButton) languageButton.textContent = `${t("languageButton")}: ${LANGUAGES[currentLanguage()]}`;
+}
+
+function showLanguageGate() {
+  applyTranslations();
+  $("#languageGate")?.classList.remove("closing", "hidden");
+  document.body.classList.add("language-open");
+}
+
+function closeLanguageGate() {
+  const gate = $("#languageGate");
+  if (!gate) return;
+  gate.classList.add("closing");
+  document.body.classList.remove("language-open");
+  document.body.classList.add("language-restarting");
+  setTimeout(() => {
+    gate.classList.add("hidden");
+    gate.classList.remove("closing");
+    document.body.classList.remove("language-restarting");
+  }, 720);
+}
+
+function chooseLanguage(language) {
+  state.settings.language = TRANSLATIONS[language] ? language : "en";
+  state.settings.languageSelected = true;
+  latestStudySession = null;
+  chatMessages = [];
+  saveState();
+  renderAll();
+  setView("dashboard");
+  closeLanguageGate();
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function uid(prefix) {
@@ -102,20 +662,21 @@ function setView(viewName) {
   $(`#${viewName}View`)?.classList.add("active");
 
   $$(".nav-item").forEach((item) => item.classList.toggle("active", item.dataset.view === viewName));
-  $("#pageTitle").textContent = {
-    dashboard: "Dashboard",
-    classes: "Classes",
-    materials: "Materials",
-    study: "Daily Preparation",
-    examBuilder: "Exam Builder",
-    examRoom: "Final Exam",
-    results: "Results",
-    assignments: "Assignments",
-    statistics: "Statistics",
-    about: "About",
-    contact: "Contact",
-    settings: "Settings"
+  const titleKey = {
+    dashboard: "navDashboard",
+    classes: "navClasses",
+    materials: "navMaterials",
+    study: "navStudy",
+    examBuilder: "navExamBuilder",
+    examRoom: "navExamBuilder",
+    results: "resultsRecovery",
+    assignments: "navAssignments",
+    statistics: "navStatistics",
+    about: "navAbout",
+    contact: "navContact",
+    settings: "navSettings"
   }[viewName] || "StudyAI";
+  $("#pageTitle").textContent = titleKey === "StudyAI" ? "StudyAI" : t(titleKey);
 }
 
 function hydrateClassSelects() {
@@ -244,7 +805,7 @@ function renderAll() {
   document.body.dataset.theme = state.settings.theme;
   const themeToggle = $("#themeToggle");
   if (themeToggle) {
-    const nextTheme = state.settings.theme === "dark" ? "Light mode" : "Dark mode";
+    const nextTheme = state.settings.theme === "dark" ? t("lightMode") : t("darkMode");
     themeToggle.textContent = nextTheme;
     themeToggle.title = `Switch to ${nextTheme}`;
   }
@@ -257,6 +818,7 @@ function renderAll() {
   $("#settingExplanation").value = state.settings.explanation;
   $("#settingDifficulty").value = state.settings.difficulty;
   if ($("#settingAiEndpoint")) $("#settingAiEndpoint").value = state.settings.aiEndpoint || STUDYAI_API_URL;
+  applyTranslations();
 }
 
 function renderDashboard() {
@@ -268,8 +830,10 @@ function renderDashboard() {
   $("#metricScore").textContent = `${average}%`;
 
   const cls = activeClass();
-  $("#todayFocus").textContent = cls ? `Continue ${cls.name}` : "Create your first class";
-  $("#todayFocusDetail").textContent = cls ? `Goal: ${cls.goal}. Topics: ${cls.topics.slice(0, 3).join(", ") || "not defined"}.` : "Then upload materials or start without material.";
+  $("#todayFocus").textContent = cls ? t("continueClass", { name: cls.name }) : t("createFirstClass");
+  $("#todayFocusDetail").textContent = cls
+    ? t("goalTopics", { goal: cls.goal, topics: cls.topics.slice(0, 3).join(", ") || t("notDefined") })
+    : t("uploadOrStart");
 
   const recent = state.sessions.slice(-4).reverse();
   $("#recentSessions").innerHTML = recent.length ? recent.map((session) => `
@@ -278,7 +842,7 @@ function renderDashboard() {
       <p>${escapeHtml(session.summary)}</p>
       <div class="card-meta"><span>${escapeHtml(session.explanation)}</span><span>${new Date(session.createdAt).toLocaleDateString()}</span></div>
     </article>
-  `).join("") : `<div class="empty-state">No sessions yet. Start a daily preparation session.</div>`;
+  `).join("") : `<div class="empty-state">${escapeHtml(t("noSessions"))}</div>`;
 
   renderRecommendations();
 }
@@ -309,12 +873,12 @@ function renderClasses() {
       </div>
       <div class="card-meta">
         <span>${escapeHtml(item.level)}</span>
-        <span>${item.topics.length} topics</span>
-        <span>${state.materials.filter((mat) => mat.classId === item.id).length} materials</span>
+        <span>${escapeHtml(t("classMetaTopics", { count: String(item.topics.length) }))}</span>
+        <span>${escapeHtml(t("classMetaMaterials", { count: String(state.materials.filter((mat) => mat.classId === item.id).length) }))}</span>
       </div>
-      <button class="secondary" data-activate-class="${item.id}">Open Class</button>
+      <button class="secondary" data-activate-class="${item.id}">${escapeHtml(t("openClass"))}</button>
     </article>
-  `).join("") || `<div class="empty-state">No classes yet.</div>`;
+  `).join("") || `<div class="empty-state">${escapeHtml(t("noClasses"))}</div>`;
 }
 
 function renderMaterials() {
@@ -332,7 +896,7 @@ function renderMaterials() {
         </div>
       </article>
     `;
-  }).join("") : `<div class="empty-state">No materials yet. Upload slides, books, notes, or assignment sheets.</div>`;
+  }).join("") : `<div class="empty-state">${escapeHtml(t("noMaterials"))}</div>`;
 }
 
 function renderStats() {
@@ -344,12 +908,12 @@ function renderStats() {
   const weakTopics = findWeakTopics();
 
   $("#statsGrid").innerHTML = [
-    ["Active class", cls?.name || "No class"],
-    ["Study sessions", sessions.length],
-    ["Uploaded materials", materials.length],
-    ["Average score", `${avg}%`],
-    ["Weak topic signal", weakTopics[0] || "Not enough exams"],
-    ["Question history", state.questionHistory.length]
+    [t("activeClass"), cls?.name || t("noClass")],
+    [t("studySessions"), sessions.length],
+    [t("uploadedMaterials"), materials.length],
+    [t("averageScore"), `${avg}%`],
+    [t("weakTopicSignal"), weakTopics[0] || t("notEnoughExams")],
+    [t("questionHistory"), state.questionHistory.length]
   ].map(([label, value]) => `
     <article class="stat-card">
       <span class="label">${escapeHtml(label)}</span>
@@ -728,6 +1292,20 @@ $("#themeToggle").addEventListener("click", () => {
   renderAll();
 });
 
+$("#languageButton").addEventListener("click", () => {
+  showLanguageGate();
+});
+
+$("#languageSelect").addEventListener("change", (event) => {
+  state.settings.language = event.target.value;
+  saveState();
+  applyTranslations();
+});
+
+$("#enterAppBtn").addEventListener("click", () => {
+  chooseLanguage($("#languageSelect").value);
+});
+
 $("#classForm").addEventListener("submit", (event) => {
   event.preventDefault();
   const item = {
@@ -941,3 +1519,8 @@ $("#settingsForm").addEventListener("submit", (event) => {
 $("#refreshAdviceBtn").addEventListener("click", renderRecommendations);
 
 renderAll();
+if (!state.settings.languageSelected) {
+  showLanguageGate();
+} else {
+  $("#languageGate")?.classList.add("hidden");
+}
