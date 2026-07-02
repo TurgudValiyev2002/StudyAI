@@ -21,6 +21,17 @@ let chatMessages = [];
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
+function detectMobileDevice() {
+  return window.matchMedia("(max-width: 760px), (pointer: coarse) and (max-width: 920px)").matches;
+}
+
+function applyDeviceMode() {
+  document.body.dataset.device = detectMobileDevice() ? "mobile" : "desktop";
+}
+
+applyDeviceMode();
+window.addEventListener("resize", applyDeviceMode);
+
 const LANGUAGES = {
   en: "English",
   de: "Deutsch",

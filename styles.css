@@ -1418,3 +1418,257 @@ dialog::backdrop {
     grid-template-columns: 1fr;
   }
 }
+
+body[data-device="mobile"] {
+  background: var(--bg);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body[data-device="mobile"] .app-shell {
+  padding-bottom: calc(88px + env(safe-area-inset-bottom));
+}
+
+body[data-device="mobile"] .sidebar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding: 10px 12px;
+  gap: 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+body[data-device="mobile"] .brand-row {
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+body[data-device="mobile"] .brand {
+  justify-content: space-between;
+}
+
+body[data-device="mobile"] .brand-mark {
+  width: 38px;
+  height: 38px;
+}
+
+body[data-device="mobile"] .sidebar-card {
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 8px;
+}
+
+body[data-device="mobile"] .sidebar-card .label {
+  grid-column: 1 / -1;
+}
+
+body[data-device="mobile"] .sidebar-card select {
+  min-height: 44px;
+}
+
+body[data-device="mobile"] .sidebar-card button {
+  min-height: 44px;
+  padding: 0 12px;
+}
+
+body[data-device="mobile"] .header-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+body[data-device="mobile"] .account-ribbon {
+  grid-column: 1 / -1;
+  grid-template-columns: auto 1fr auto;
+  min-height: 54px;
+}
+
+body[data-device="mobile"] .account-ribbon button {
+  grid-column: auto;
+  min-width: 86px;
+}
+
+body[data-device="mobile"] #newStudyBtn {
+  grid-column: 1 / -1;
+}
+
+body[data-device="mobile"] .nav-list {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(84px, 1fr);
+  gap: 8px;
+  margin: 0;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  overflow-x: auto;
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -12px 30px rgba(23, 32, 42, 0.12);
+  backdrop-filter: blur(18px);
+}
+
+body[data-device="mobile"] .nav-item {
+  min-height: 54px;
+  padding: 0 10px;
+  display: grid;
+  place-items: center;
+  white-space: normal;
+  font-size: 0.78rem;
+  line-height: 1.15;
+}
+
+body[data-device="mobile"] .main {
+  width: 100%;
+  padding: 16px 12px 26px;
+}
+
+body[data-device="mobile"] .topbar {
+  padding: 0 2px;
+  margin-bottom: 12px;
+}
+
+body[data-device="mobile"] .topbar .eyebrow {
+  display: none;
+}
+
+body[data-device="mobile"] #pageTitle {
+  font-size: 1.65rem;
+}
+
+body[data-device="mobile"] .hero-band {
+  min-height: auto;
+  padding: 18px;
+}
+
+body[data-device="mobile"] .hero-band h2 {
+  font-size: 1.55rem;
+  line-height: 1.12;
+}
+
+body[data-device="mobile"] .hero-band p {
+  font-size: 0.95rem;
+}
+
+body[data-device="mobile"] .focus-panel img {
+  display: none;
+}
+
+body[data-device="mobile"] .metric-grid,
+body[data-device="mobile"] .intelligence-grid,
+body[data-device="mobile"] .two-column,
+body[data-device="mobile"] .study-layout,
+body[data-device="mobile"] .assignment-layout,
+body[data-device="mobile"] .form-grid,
+body[data-device="mobile"] .choice-grid,
+body[data-device="mobile"] .step-grid,
+body[data-device="mobile"] .result-score,
+body[data-device="mobile"] .info-card-grid,
+body[data-device="mobile"] .contact-grid,
+body[data-device="mobile"] .flashcard-deck,
+body[data-device="mobile"] .rag-status-grid,
+body[data-device="mobile"] .account-profile-grid {
+  grid-template-columns: 1fr;
+}
+
+body[data-device="mobile"] .metric-grid,
+body[data-device="mobile"] .class-grid,
+body[data-device="mobile"] .stats-grid {
+  gap: 10px;
+  margin: 12px 0;
+}
+
+body[data-device="mobile"] .panel,
+body[data-device="mobile"] .metric,
+body[data-device="mobile"] .class-card,
+body[data-device="mobile"] .material-card,
+body[data-device="mobile"] .session-card,
+body[data-device="mobile"] .question-card,
+body[data-device="mobile"] .result-card,
+body[data-device="mobile"] .step-card,
+body[data-device="mobile"] .stat-card {
+  padding: 14px;
+}
+
+body[data-device="mobile"] .panel-head,
+body[data-device="mobile"] .section-head,
+body[data-device="mobile"] .exam-topline {
+  align-items: stretch;
+  flex-direction: column;
+  gap: 10px;
+}
+
+body[data-device="mobile"] .panel-actions,
+body[data-device="mobile"] .tool-row,
+body[data-device="mobile"] .submit-row {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+body[data-device="mobile"] button,
+body[data-device="mobile"] input,
+body[data-device="mobile"] select,
+body[data-device="mobile"] textarea {
+  min-height: 48px;
+  font-size: 1rem;
+}
+
+body[data-device="mobile"] textarea {
+  min-height: 110px;
+}
+
+body[data-device="mobile"] .output-panel {
+  min-height: auto;
+}
+
+body[data-device="mobile"] .empty-state {
+  min-height: 120px;
+  padding: 16px;
+}
+
+body[data-device="mobile"] .chat-message {
+  max-width: 94%;
+}
+
+body[data-device="mobile"] .chat-messages {
+  max-height: 300px;
+}
+
+body[data-device="mobile"] .exam-sheet {
+  gap: 12px;
+}
+
+body[data-device="mobile"] .timer {
+  width: 100%;
+  min-width: 0;
+}
+
+body[data-device="mobile"] .modal-card {
+  width: min(100%, calc(100vw - 18px));
+  max-height: min(88vh, 760px);
+  overflow: auto;
+}
+
+body[data-device="mobile"] .language-window {
+  min-height: auto;
+  grid-template-columns: 1fr;
+}
+
+body[data-device="mobile"] .language-visual {
+  min-height: 170px;
+  padding: 18px;
+}
+
+body[data-device="mobile"] .language-visual img {
+  width: min(220px, 72vw);
+}
+
+body[data-device="mobile"] .language-copy {
+  padding: 24px;
+}
+
+body[data-device="mobile"] .language-copy h1 {
+  font-size: 2rem;
+}
