@@ -1,10 +1,14 @@
 const STORAGE_KEY = "studyai_state_v1";
+const AUTH_KEY = "studyai_auth_v1";
+const ACCOUNT_PREFIX = "studyai_account_";
 const DEPLOYED_STUDYAI_API_URL = window.STUDYAI_API_URL || "";
 const IS_LOCAL_HOST = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
 const STUDYAI_API_URL = DEPLOYED_STUDYAI_API_URL || (IS_LOCAL_HOST ? "/api/studyai" : "");
 
 
-const state = loadState();
+let currentAccount = loadAuth();
+let accountMode = "login";
+let state = loadState();
 normalizeState();
 let currentExam = null;
 let timerId = null;
@@ -36,6 +40,24 @@ const TRANSLATIONS = {
     currentClass: "Current class",
     newClass: "New Class",
     startStudySession: "Start Study Session",
+    account: "Account",
+    guestMode: "Guest mode",
+    login: "Login",
+    logout: "Logout",
+    register: "Register",
+    loginRequired: "Login required",
+    enterYourStudySpace: "Enter your study space",
+    loginRequiredText: "Login or register to create classes, upload materials, save exams, and keep your study data private. Prototype note: no password is stored until Firebase Auth is connected.",
+    email: "Email",
+    password: "Password",
+    loginSuccess: "Welcome back. Your study space is opening.",
+    registerSuccess: "Account created. Your clean study space is opening.",
+    logoutSuccess: "You logged out. Private study data is hidden now.",
+    loginFailed: "Account not found or password is wrong.",
+    registerFailed: "This email already has an account.",
+    passwordShort: "Password must be at least 4 characters.",
+    enteringStudyAI: "Bird is flying into your study space...",
+    leavingStudyAI: "Bird is flying back. Your private data is hidden.",
     darkMode: "Dark mode",
     lightMode: "Light mode",
     navDashboard: "Dashboard",
@@ -561,20 +583,21 @@ const templates = {
   ]
 };
 
-function loadState() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) return JSON.parse(saved);
+const PROTECTED_VIEWS = new Set(["classes", "materials", "study", "examBuilder", "examRoom", "results", "assignments", "statistics", "settings"]);
 
+function createDefaultState(seedDemo = false, accountName = "Student") {
   return {
     settings: {
-      name: "Dear Turgud",
+      name: accountName,
       explanation: "Medium level",
       difficulty: "Medium",
       theme: "light",
-      aiEndpoint: STUDYAI_API_URL
+      aiEndpoint: STUDYAI_API_URL,
+      language: localStorage.getItem("studyai_language") || "en",
+      languageSelected: Boolean(localStorage.getItem("studyai_language"))
     },
-    activeClassId: "class-ml",
-    classes: [
+    activeClassId: seedDemo ? "class-ml" : "",
+    classes: seedDemo ? [
       {
         id: "class-ml",
         name: "Machine Learning",
@@ -583,13 +606,54 @@ function loadState() {
         topics: ["supervised learning", "regularization", "neural networks", "evaluation"],
         createdAt: new Date().toISOString()
       }
-    ],
+    ] : [],
     materials: [],
     sessions: [],
     exams: [],
     questionHistory: [],
     assignments: []
   };
+}
+
+function accountStorageKey(email) {
+  return `${ACCOUNT_PREFIX}${String(email || "").trim().toLowerCase()}`;
+}
+
+function loadAuth() {
+  const saved = sessionStorage.getItem(AUTH_KEY);
+  if (!saved) return null;
+  try {
+    return JSON.parse(saved);
+  } catch {
+    return null;
+  }
+}
+
+function loadAccountState(email, name) {
+  const saved = localStorage.getItem(accountStorageKey(email));
+  if (!saved) return createDefaultState(false, name || "Student");
+  try {
+    return JSON.parse(saved);
+  } catch {
+    return createDefaultState(false, name || "Student");
+  }
+}
+
+function loadState() {
+  if (currentAccount?.email) return loadAccountState(currentAccount.email, currentAccount.name);
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      const publicState = JSON.parse(saved);
+      const emptyState = createDefaultState(false);
+      return { ...emptyState, settings: { ...emptyState.settings, ...(publicState.settings || {}) } };
+    } catch {
+      return createDefaultState(false);
+    }
+  }
+
+  return createDefaultState(false);
 }
 
 function normalizeState() {
@@ -602,7 +666,11 @@ function normalizeState() {
 }
 
 function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  if (currentAccount?.email) {
+    localStorage.setItem(accountStorageKey(currentAccount.email), JSON.stringify(state));
+    return;
+  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ settings: state.settings }));
 }
 
 function currentLanguage() {
@@ -655,6 +723,7 @@ function closeLanguageGate() {
 function chooseLanguage(language) {
   state.settings.language = TRANSLATIONS[language] ? language : "en";
   state.settings.languageSelected = true;
+  localStorage.setItem("studyai_language", state.settings.language);
   latestStudySession = null;
   chatMessages = [];
   saveState();
@@ -662,6 +731,89 @@ function chooseLanguage(language) {
   setView("dashboard");
   closeLanguageGate();
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function isLoggedIn() {
+  return Boolean(currentAccount?.email);
+}
+
+function openAccountDialog(mode = "login") {
+  accountMode = mode;
+  renderAccountDialog();
+  $("#accountDialog").showModal();
+  setTimeout(() => $("#authEmail")?.focus(), 80);
+}
+
+function renderAccountDialog() {
+  const isRegister = accountMode === "register";
+  $("#loginTab").classList.toggle("active", !isRegister);
+  $("#registerTab").classList.toggle("active", isRegister);
+  $("#accountNameLabel").hidden = !isRegister;
+  $("#accountSubmitBtn").textContent = isRegister ? t("register") : t("login");
+  $("#accountModeLabel").textContent = isRegister ? t("register") : t("loginRequired");
+  $("#accountDialogTitle").textContent = isRegister ? "Create your study space" : t("enterYourStudySpace");
+  $("#accountDialogText").textContent = isRegister
+    ? "This is a UI prototype. No password is stored; Firebase Auth will handle real accounts later."
+    : t("loginRequiredText");
+  $("#accountMessage").hidden = true;
+}
+
+function showAccountMessage(text) {
+  const message = $("#accountMessage");
+  message.textContent = text;
+  message.hidden = false;
+}
+
+function animateAccountFlight(direction, text) {
+  const flight = $("#accountFlight");
+  if (!flight) return;
+  $("#flightText").textContent = text;
+  flight.hidden = false;
+  flight.classList.remove("enter", "leave");
+  flight.classList.add(direction);
+  setTimeout(() => {
+    flight.hidden = true;
+    flight.classList.remove("enter", "leave");
+  }, 1050);
+}
+
+function switchToAccount(account) {
+  const language = currentLanguage();
+  currentAccount = account;
+  sessionStorage.setItem(AUTH_KEY, JSON.stringify(currentAccount));
+  state = loadState();
+  normalizeState();
+  state.settings.name = account.name;
+  state.settings.language = language;
+  state.settings.languageSelected = true;
+  saveState();
+  latestStudySession = null;
+  chatMessages = [];
+  animateAccountFlight("enter", t("enteringStudyAI"));
+  renderAll();
+  setView("dashboard");
+}
+
+function logoutAccount() {
+  const language = currentLanguage();
+  if (isLoggedIn()) saveState();
+  currentAccount = null;
+  sessionStorage.removeItem(AUTH_KEY);
+  state = createDefaultState(false);
+  state.settings.language = language;
+  state.settings.languageSelected = true;
+  saveState();
+  latestStudySession = null;
+  chatMessages = [];
+  animateAccountFlight("leave", t("leavingStudyAI"));
+  renderAll();
+  setView("dashboard");
+}
+
+function requireAccount() {
+  if (isLoggedIn()) return true;
+  openAccountDialog("login");
+  return false;
 }
 
 function uid(prefix) {
@@ -833,11 +985,23 @@ function renderAll() {
   renderCitationPanel();
   renderRagStatusPanel();
   renderStats();
+  renderAccountRibbon();
   $("#settingName").value = state.settings.name;
   $("#settingExplanation").value = state.settings.explanation;
   $("#settingDifficulty").value = state.settings.difficulty;
   if ($("#settingAiEndpoint")) $("#settingAiEndpoint").value = state.settings.aiEndpoint || STUDYAI_API_URL;
   applyTranslations();
+  renderAccountRibbon();
+}
+
+function renderAccountRibbon() {
+  const name = $("#accountName");
+  const login = $("#accountLoginBtn");
+  const logout = $("#accountLogoutBtn");
+  if (!name || !login || !logout) return;
+  name.textContent = isLoggedIn() ? currentAccount.name : t("guestMode");
+  login.hidden = isLoggedIn();
+  logout.hidden = !isLoggedIn();
 }
 
 function renderDashboard() {
@@ -1500,13 +1664,20 @@ function escapeHtml(value) {
 
 document.addEventListener("click", (event) => {
   const nav = event.target.closest("[data-view]");
-  if (nav) setView(nav.dataset.view);
+  if (nav) {
+    if (PROTECTED_VIEWS.has(nav.dataset.view) && !requireAccount()) return;
+    setView(nav.dataset.view);
+  }
 
   const jump = event.target.closest("[data-view-jump]");
-  if (jump) setView(jump.dataset.viewJump);
+  if (jump) {
+    if (PROTECTED_VIEWS.has(jump.dataset.viewJump) && !requireAccount()) return;
+    setView(jump.dataset.viewJump);
+  }
 
   const activate = event.target.closest("[data-activate-class]");
   if (activate) {
+    if (!requireAccount()) return;
     state.activeClassId = activate.dataset.activateClass;
     saveState();
     renderAll();
@@ -1529,14 +1700,24 @@ document.addEventListener("click", (event) => {
 });
 
 $("#activeClassSelect").addEventListener("change", (event) => {
+  if (!requireAccount()) return;
   state.activeClassId = event.target.value;
   saveState();
   renderAll();
 });
 
-$("#quickClassBtn").addEventListener("click", () => $("#classDialog").showModal());
-$("#addClassBtn").addEventListener("click", () => $("#classDialog").showModal());
-$("#newStudyBtn").addEventListener("click", () => setView("study"));
+$("#quickClassBtn").addEventListener("click", () => {
+  if (!requireAccount()) return;
+  $("#classDialog").showModal();
+});
+$("#addClassBtn").addEventListener("click", () => {
+  if (!requireAccount()) return;
+  $("#classDialog").showModal();
+});
+$("#newStudyBtn").addEventListener("click", () => {
+  if (!requireAccount()) return;
+  setView("study");
+});
 
 $("#themeToggle").addEventListener("click", () => {
   state.settings.theme = state.settings.theme === "dark" ? "light" : "dark";
@@ -1550,6 +1731,7 @@ $("#languageButton").addEventListener("click", () => {
 
 $("#languageSelect").addEventListener("change", (event) => {
   state.settings.language = event.target.value;
+  localStorage.setItem("studyai_language", state.settings.language);
   saveState();
   applyTranslations();
 });
@@ -1558,8 +1740,39 @@ $("#enterAppBtn").addEventListener("click", () => {
   chooseLanguage($("#languageSelect").value);
 });
 
+$("#accountLoginBtn").addEventListener("click", () => openAccountDialog("login"));
+$("#accountLogoutBtn").addEventListener("click", logoutAccount);
+
+$$("[data-account-mode]").forEach((button) => {
+  button.addEventListener("click", () => {
+    accountMode = button.dataset.accountMode;
+    renderAccountDialog();
+  });
+});
+
+$("#accountForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (event.submitter?.value === "cancel") {
+    $("#accountDialog").close();
+    return;
+  }
+  const email = $("#authEmail").value.trim().toLowerCase();
+  const name = $("#authName").value.trim() || email.split("@")[0] || "Student";
+  const password = $("#authPassword").value.trim();
+  if (!email) return;
+  if (password.length < 4) {
+    showAccountMessage(t("passwordShort"));
+    return;
+  }
+
+  switchToAccount({ email, name });
+  $("#accountDialog").close();
+  $("#accountForm").reset();
+});
+
 $("#classForm").addEventListener("submit", (event) => {
   event.preventDefault();
+  if (!requireAccount()) return;
   const item = {
     id: uid("class"),
     name: $("#className").value.trim(),
@@ -1579,6 +1792,7 @@ $("#classForm").addEventListener("submit", (event) => {
 
 $("#materialForm").addEventListener("submit", (event) => {
   event.preventDefault();
+  if (!requireAccount()) return;
   const files = Array.from($("#materialFiles").files);
   const fallback = files.length ? files : [{ name: "Manual material note" }];
   fallback.forEach((file) => {
@@ -1599,6 +1813,7 @@ $("#materialForm").addEventListener("submit", (event) => {
 
 $("#studyForm").addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (!requireAccount()) return;
   $("#startChatBtn").disabled = true;
   $("#studyChatPanel").hidden = true;
   chatMessages = [];
@@ -1647,6 +1862,7 @@ $("#studyForm").addEventListener("submit", async (event) => {
 });
 
 $("#saveStudyBtn").addEventListener("click", () => {
+  if (!requireAccount()) return;
   if (!latestStudySession) return;
   state.sessions.push(latestStudySession);
   latestStudySession = null;
@@ -1694,6 +1910,7 @@ $("#chatForm").addEventListener("submit", async (event) => {
 
 $("#examForm").addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (!requireAccount()) return;
   const config = {
     classId: $("#examClass").value,
     topics: $("#examTopics").value.split(",").map((topic) => topic.trim()).filter(Boolean),
@@ -1737,6 +1954,7 @@ $("#confirmDialog").addEventListener("close", () => {
 
 $("#assignmentForm").addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (!requireAccount()) return;
   const payload = {
     classId: $("#assignmentClass").value,
     title: $("#assignmentTitle").value.trim(),
@@ -1771,6 +1989,7 @@ $("#nextStepBtn").addEventListener("click", () => {
 
 $("#settingsForm").addEventListener("submit", (event) => {
   event.preventDefault();
+  if (!requireAccount()) return;
   state.settings.name = $("#settingName").value.trim() || "Dear Turgud";
   state.settings.explanation = $("#settingExplanation").value;
   state.settings.difficulty = $("#settingDifficulty").value;

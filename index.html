@@ -31,6 +31,11 @@
   </div>
 
   <div class="app-shell">
+    <div id="accountFlight" class="account-flight" hidden aria-hidden="true">
+      <div class="flight-bird"><span></span><span></span></div>
+      <p id="flightText">Entering StudyAI...</p>
+    </div>
+
     <header class="sidebar">
       <div class="brand-row">
         <div class="brand">
@@ -48,6 +53,15 @@
         </div>
 
         <div class="topbar-actions header-actions">
+          <div class="account-ribbon" id="accountRibbon">
+            <div class="account-bird" aria-hidden="true"><span></span><span></span></div>
+            <div>
+              <span class="label" data-i18n="account">Account</span>
+              <strong id="accountName" data-i18n="guestMode">Guest mode</strong>
+            </div>
+            <button class="secondary" id="accountLoginBtn" type="button" data-i18n="login">Login</button>
+            <button class="danger" id="accountLogoutBtn" type="button" hidden data-i18n="logout">Logout</button>
+          </div>
           <button class="icon-button" id="languageButton" type="button" data-i18n="languageButton">Language</button>
           <button class="icon-button" id="themeToggle" title="Toggle theme">Dark mode</button>
           <button class="primary" id="newStudyBtn" data-i18n="startStudySession">Start Study Session</button>
@@ -433,6 +447,31 @@
       <label><span data-i18n="mainGoal">Main goal</span><select id="classGoal"><option value="Daily class preparation" data-i18n="dailyClassPreparation">Daily class preparation</option><option value="Final exam preparation" data-i18n="finalExamPreparation">Final exam preparation</option><option value="Assignments and coding" data-i18n="assignmentsCoding">Assignments and coding</option><option value="Research reading" data-i18n="researchReading">Research reading</option></select></label>
       <label><span data-i18n="mainTopics">Main topics</span><textarea id="classTopics" data-i18n-placeholder="mainTopicsPlaceholder" placeholder="Comma separated: CNN, RNN, transformers..."></textarea></label>
       <button class="primary" type="submit" data-i18n="createClass">Create Class</button>
+    </form>
+  </dialog>
+
+  <dialog id="accountDialog">
+    <form id="accountForm" method="dialog" class="modal-card account-modal">
+      <div class="account-modal-hero">
+        <div class="account-bird big" aria-hidden="true"><span></span><span></span></div>
+        <div>
+          <p class="eyebrow" id="accountModeLabel" data-i18n="loginRequired">Login required</p>
+          <h2 id="accountDialogTitle" data-i18n="enterYourStudySpace">Enter your study space</h2>
+          <p id="accountDialogText" data-i18n="loginRequiredText">Login or register to create classes, upload materials, save exams, and keep your study data private.</p>
+        </div>
+      </div>
+      <div class="account-tabs">
+        <button class="secondary active" id="loginTab" type="button" data-account-mode="login" data-i18n="login">Login</button>
+        <button class="secondary" id="registerTab" type="button" data-account-mode="register" data-i18n="register">Register</button>
+      </div>
+      <label id="accountNameLabel"><span data-i18n="yourName">Your name</span><input id="authName" placeholder="Dear Turgud"></label>
+      <label><span data-i18n="email">Email</span><input id="authEmail" type="email" autocomplete="email" required placeholder="student@example.com"></label>
+      <label><span data-i18n="password">Password</span><input id="authPassword" type="password" autocomplete="current-password" required placeholder="Minimum 4 characters"></label>
+      <div id="accountMessage" class="account-message" hidden></div>
+      <div class="submit-row">
+        <button class="secondary" value="cancel" type="submit" data-i18n="cancel">Cancel</button>
+        <button class="primary" id="accountSubmitBtn" value="confirm" type="submit" data-i18n="login">Login</button>
+      </div>
     </form>
   </dialog>
 
