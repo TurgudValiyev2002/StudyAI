@@ -90,7 +90,7 @@ const TRANSLATIONS = {
     appEyebrow: "Personal AI study, exam, and assignment tutor",
     heroEyebrow: "Dear Turgud, build target",
     heroTitle: "StudyAI remembers each class, learns from materials, creates exams, and teaches assignments step by step.",
-    heroText: "The first version below is a functional prototype. It uses local persistence now, and its structure is ready for Firebase Auth, Firestore, Storage, and a RAG backend.",
+    heroText: "The first version below is a functional prototype. It uses local persistence now, and its structure is ready for secure accounts, cloud storage, and material-based learning.",
     todayFocusLabel: "Today focus",
     createFirstClass: "Create your first class",
     uploadOrStart: "Then upload materials or start without material.",
@@ -108,7 +108,7 @@ const TRANSLATIONS = {
     noSessions: "No sessions yet. Start a daily preparation session.",
     courseMemory: "Course memory",
     addClass: "Add Class",
-    ragLibrary: "RAG-ready library",
+    ragLibrary: "Materials library",
     classLabel: "Class",
     materialType: "Material type",
     lectureSlides: "Lecture slides",
@@ -205,7 +205,7 @@ const TRANSLATIONS = {
     yourName: "Your name",
     defaultExplanation: "Default explanation level",
     defaultDifficulty: "Default exam difficulty",
-    aiBackendEndpoint: "AI backend endpoint",
+    aiBackendEndpoint: "AI service endpoint",
     saveSettings: "Save Settings",
     className: "Class name",
     level: "Level",
@@ -238,10 +238,10 @@ const TRANSLATIONS = {
     notEnoughExams: "Not enough exams",
     topicMasteryMap: "Topic Mastery Map",
     personalizedStudyPath: "Personalized Study Path",
-    ragCitationSystem: "RAG & Citations",
+    ragCitationSystem: "Learning Sources",
     diagnostic: "Diagnostic",
     materialAware: "Material-aware",
-    backendReady: "Backend-ready",
+    sourceSyncLabel: "Ready to sync later",
     generateFlashcards: "Generate Flashcards",
     explainSimpler: "Explain simpler",
     explainWithExample: "Give example",
@@ -280,7 +280,7 @@ TRANSLATIONS.de = {
   navSettings: "Einstellungen",
   appEyebrow: "Persönlicher KI-Tutor für Lernen, Prüfungen und Aufgaben",
   heroTitle: "StudyAI merkt sich jede Klasse, lernt aus Materialien, erstellt Prüfungen und führt Aufgaben Schritt für Schritt.",
-  heroText: "Diese Version ist ein funktionaler Prototyp. Sie nutzt lokale Speicherung und ist bereit für Firebase Auth, Firestore, Storage und ein RAG-Backend.",
+  heroText: "Diese Version ist ein funktionaler Prototyp. Sie nutzt lokale Speicherung und ist bereit für sichere Konten, Cloud-Speicher und materialbasiertes Lernen.",
   todayFocusLabel: "Heutiger Fokus",
   createFirstClass: "Erstelle deine erste Klasse",
   uploadOrStart: "Lade danach Materialien hoch oder starte ohne Material.",
@@ -295,7 +295,7 @@ TRANSLATIONS.de = {
   refresh: "Aktualisieren",
   noSessions: "Noch keine Sitzungen. Starte eine Tagesvorbereitung.",
   addClass: "Klasse hinzufügen",
-  ragLibrary: "RAG-bereite Bibliothek",
+  ragLibrary: "Materialbibliothek",
   classLabel: "Klasse",
   materialType: "Materialtyp",
   lectureSlides: "Vorlesungsfolien",
@@ -389,7 +389,7 @@ TRANSLATIONS.ru = {
   navSettings: "Настройки",
   appEyebrow: "Персональный AI tutor для учебы, экзаменов и заданий",
   heroTitle: "StudyAI запоминает каждый класс, использует материалы, создает экзамены и ведет задания пошагово.",
-  heroText: "Это функциональный прототип. Сейчас он использует локальное хранение и готов к Firebase Auth, Firestore, Storage и RAG backend.",
+  heroText: "Это функциональный прототип. Сейчас он использует локальное хранение и готов к защищенным аккаунтам, облачному хранению и обучению по материалам.",
   todayFocusLabel: "Фокус сегодня",
   createFirstClass: "Создайте первый класс",
   uploadOrStart: "Затем загрузите материалы или начните без них.",
@@ -483,7 +483,7 @@ TRANSLATIONS.tr = {
   navSettings: "Ayarlar",
   appEyebrow: "Kişisel AI çalışma, sınav ve ödev asistanı",
   heroTitle: "StudyAI her dersi hatırlar, materyallerden öğrenir, sınav oluşturur ve ödevleri adım adım öğretir.",
-  heroText: "Bu ilk sürüm çalışan bir prototiptir. Şimdilik local storage kullanır ve Firebase Auth, Firestore, Storage ve RAG backend için hazırdır.",
+  heroText: "Bu ilk sürüm çalışan bir prototiptir. Şimdilik yerel kayıt kullanır ve güvenli hesaplar, bulut depolama ve materyal tabanlı öğrenme için hazırdır.",
   todayFocusLabel: "Bugünkü odak",
   createFirstClass: "İlk dersini oluştur",
   uploadOrStart: "Sonra materyal yükle veya materyalsiz başla.",
@@ -497,7 +497,7 @@ TRANSLATIONS.tr = {
   noSessions: "Henüz oturum yok. Günlük hazırlık başlat.",
   addClass: "Ders Ekle",
   courseMemory: "Ders hafızası",
-  ragLibrary: "RAG hazır kütüphane",
+  ragLibrary: "Materyal kütüphanesi",
   classLabel: "Ders",
   materialType: "Materyal türü",
   lectureSlides: "Ders slaytları",
@@ -572,7 +572,7 @@ TRANSLATIONS.tr = {
 };
 
 const topicBank = {
-  ai: ["machine learning", "deep learning", "neural networks", "computer vision", "llms", "rag", "federated learning", "edge ai"],
+  ai: ["machine learning", "deep learning", "neural networks", "computer vision", "llms", "semantic search", "federated learning", "edge ai"],
   cs: ["algorithms", "databases", "operating systems", "distributed systems", "software engineering", "security"],
   math: ["linear algebra", "probability", "optimization", "calculus", "statistics"]
 };
@@ -887,7 +887,7 @@ function studyContext(extra = {}) {
     recentExams: state.exams.filter((item) => item.classId === cls?.id).slice(-5),
     questionHistory: state.questionHistory.slice(-40),
     weakTopics: findWeakTopics().slice(0, 8),
-    note: "This frontend stores material metadata locally. True RAG requires backend document parsing, embeddings, and vector retrieval.",
+    note: "This frontend stores material metadata locally. Later cloud processing can connect answers more precisely to uploaded materials.",
     ...extra
   };
 }
@@ -895,7 +895,7 @@ function studyContext(extra = {}) {
 async function callStudyAI(task, context) {
   const endpoint = String(state.settings.aiEndpoint || STUDYAI_API_URL || "").trim();
   if (!endpoint) {
-    throw new Error("Hosted AI backend is not connected yet. Deploy StudyAI on Vercel, then paste the /api/studyai URL in Settings.");
+    throw new Error("Hosted AI service is not connected yet. Deploy StudyAI on Vercel, then paste the /api/studyai URL in Settings.");
   }
 
   const response = await fetch(endpoint, {
@@ -906,7 +906,7 @@ async function callStudyAI(task, context) {
 
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(data.reason || data.error || `StudyAI backend failed with ${response.status}`);
+    throw new Error(data.reason || data.error || `StudyAI service failed with ${response.status}`);
   }
   return data;
 }
@@ -1121,7 +1121,7 @@ function renderStudyPath() {
     "Generate flashcards from the preparation plan and review them once.",
     "Take a short medium exam focused only on the weakest topic.",
     "Use wrong answers to request an explain-again example.",
-    "Upload or label materials so citations can point to exact sources later."
+    "Upload or label materials so StudyAI can connect future lessons to your exact sources."
   ];
   target.innerHTML = steps.map((step, index) => `
     <article class="path-step">
@@ -1146,7 +1146,7 @@ function renderCitationPanel() {
   const readiness = state.materials.length ? 55 : 15;
   target.innerHTML = `
     <div class="readiness-meter"><span style="width:${readiness}%"></span></div>
-    <p><strong>${readiness}% citation readiness.</strong> Local materials are tracked now. Exact chunk retrieval needs backend parsing, embeddings, and vector search.</p>
+    <p><strong>${readiness}% source coverage.</strong> Local materials are tracked now. Later cloud processing can connect lessons to exact uploaded pages or slides.</p>
     <div class="citation-list">
       ${rows.length ? rows.map((item) => `<span>${escapeHtml(item.type)} - ${escapeHtml(item.name)}</span>`).join("") : "<span>No materials uploaded yet.</span>"}
     </div>
@@ -1160,11 +1160,11 @@ function renderRagStatusPanel() {
   target.innerHTML = `
     <div class="rag-status-grid">
       <article><strong>${state.materials.length}</strong><span>Total material records</span></article>
-      <article><strong>${rows.length}</strong><span>Active class citation sources</span></article>
-      <article><strong>Next</strong><span>Parse files, embed chunks, store vectors, return citations.</span></article>
+      <article><strong>${rows.length}</strong><span>Active class sources</span></article>
+      <article><strong>Next</strong><span>Connect uploaded files to lessons, examples, and exam recovery.</span></article>
     </div>
     <div class="citation-list">
-      ${rows.length ? rows.map((item) => `<span>${escapeHtml(item.name)} - ${escapeHtml(item.status)}</span>`).join("") : "<span>Add slides, books, notes, or assignment sheets to prepare the citation layer.</span>"}
+      ${rows.length ? rows.map((item) => `<span>${escapeHtml(item.name)} - ${escapeHtml(item.status)}</span>`).join("") : "<span>Add slides, books, notes, or assignment sheets to prepare material-based learning.</span>"}
     </div>
   `;
 }
@@ -1179,7 +1179,7 @@ function renderRecommendations() {
       : "Take one medium exam to create your first diagnostic baseline.",
     materials.length
       ? `You have ${materials.length} material item(s). Use material-based study before hard exams.`
-      : "Upload at least lecture slides or notes so future answers can become RAG-grounded.",
+      : "Upload at least lecture slides or notes so future answers can use your own materials.",
     "For assignments, use guided mode first. It protects learning better than asking for a full final answer."
   ];
 
@@ -1247,7 +1247,7 @@ function renderStats() {
 function createStudyPlan(payload) {
   const fromScratch = payload.knowledge === "Start from scratch";
   const materialLine = payload.materialMode === "With materials"
-    ? "Use uploaded class materials first. In the backend version, this will retrieve exact chunks and citations from the vector database."
+    ? "Use uploaded class materials first. In the full version, this will connect the lesson to exact pages, slides, and notes."
     : "Use general knowledge and clearly mark that the answer is not grounded in uploaded material.";
 
   const tone = {
@@ -1529,7 +1529,7 @@ function generateFlashcards(session) {
     },
     {
       front: `What material should support ${topic}?`,
-      back: `Use lecture slides, book chapters, notes, and past exams. In the RAG backend, answers should cite exact chunks.`
+      back: `Use lecture slides, book chapters, notes, and past exams. In the full version, answers should point back to the exact source material.`
     },
     {
       front: `What is the fastest recovery action for ${topic}?`,
@@ -1832,7 +1832,7 @@ $("#materialForm").addEventListener("submit", (event) => {
       name: file.name,
       type: $("#materialType").value,
       notes: $("#materialNotes").value.trim(),
-      status: "Stored locally, ready for backend parsing",
+      status: "Stored locally, ready for later cloud processing",
       createdAt: new Date().toISOString()
     });
   });
@@ -1934,7 +1934,7 @@ $("#chatForm").addEventListener("submit", async (event) => {
     thinkingNode.innerHTML = renderAIText(result.answer);
     $("#chatModelLabel").textContent = result.model || "Hosted AI";
   } catch (error) {
-    thinkingNode.innerHTML = renderAIText(`The hosted AI backend is not connected yet, so I cannot answer as a real chatbot from GitHub Pages. Connect the Vercel endpoint in Settings, then ask again. Technical reason: ${error.message}`);
+    thinkingNode.innerHTML = renderAIText(`The hosted AI service is not connected yet, so I cannot answer as a real chatbot from GitHub Pages. Connect the Vercel endpoint in Settings, then ask again. Technical reason: ${error.message}`);
   }
 });
 

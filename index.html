@@ -95,7 +95,7 @@
           <div>
             <p class="eyebrow" data-i18n="heroEyebrow">Dear Turgud, build target</p>
             <h2 data-i18n="heroTitle">StudyAI remembers each class, learns from materials, creates exams, and teaches assignments step by step.</h2>
-            <p data-i18n="heroText">The first version below is a functional prototype. It uses local persistence now, and its structure is ready for Firebase Auth, Firestore, Storage, and a RAG backend.</p>
+            <p data-i18n="heroText">The first version below is a functional prototype. It uses local persistence now, and its structure is ready for secure accounts, cloud storage, and material-based learning.</p>
           </div>
           <div class="focus-panel">
             <img src="assets/studyai-workspace.svg" alt="Study workspace illustration">
@@ -131,7 +131,7 @@
 
           <section class="panel intelligence-panel">
             <div class="panel-head compact-head">
-              <h2 data-i18n="ragCitationSystem">RAG & Citations</h2>
+              <h2 data-i18n="ragCitationSystem">Learning Sources</h2>
               <span class="pill" data-i18n="materialAware">Material-aware</span>
             </div>
             <div id="citationPanel" class="citation-panel"></div>
@@ -171,7 +171,7 @@
       <section class="view" id="materialsView">
         <div class="section-head">
           <div>
-            <p class="eyebrow" data-i18n="ragLibrary">RAG-ready library</p>
+            <p class="eyebrow" data-i18n="ragLibrary">Materials library</p>
             <h2 data-i18n="navMaterials">Materials</h2>
           </div>
         </div>
@@ -195,8 +195,8 @@
         <div id="materialsList" class="material-list"></div>
         <section class="panel rag-panel">
           <div class="panel-head compact-head">
-            <h2 data-i18n="ragCitationSystem">RAG & Citations</h2>
-            <span class="pill" data-i18n="backendReady">Backend-ready</span>
+            <h2 data-i18n="ragCitationSystem">Learning Sources</h2>
+            <span class="pill" data-i18n="sourceSyncLabel">Ready to sync later</span>
           </div>
           <div id="ragStatusPanel"></div>
         </section>
@@ -428,7 +428,7 @@
             <label><span data-i18n="yourName">Your name</span><input id="settingName" placeholder="Dear Turgud"></label>
             <label><span data-i18n="defaultExplanation">Default explanation level</span><select id="settingExplanation"><option value="Simple language" data-i18n="simpleLanguage">Simple language</option><option value="Medium level" data-i18n="mediumLevel">Medium level</option><option value="Academic level" data-i18n="academicLevel">Academic level</option></select></label>
             <label><span data-i18n="defaultDifficulty">Default exam difficulty</span><select id="settingDifficulty"><option value="Easy" data-i18n="easy">Easy</option><option value="Medium" data-i18n="medium">Medium</option><option value="Hard" data-i18n="hard">Hard</option><option value="Very hard" data-i18n="veryHard">Very hard</option></select></label>
-            <label><span data-i18n="aiBackendEndpoint">AI backend endpoint</span><input id="settingAiEndpoint" placeholder="https://your-vercel-app.vercel.app/api/studyai"></label>
+            <label><span data-i18n="aiBackendEndpoint">AI service endpoint</span><input id="settingAiEndpoint" placeholder="https://your-vercel-app.vercel.app/api/studyai"></label>
             <button class="primary" type="submit" data-i18n="saveSettings">Save Settings</button>
           </form>
         </div>
