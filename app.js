@@ -242,6 +242,12 @@ function openPreparationChat() {
 
 function renderAll() {
   document.body.dataset.theme = state.settings.theme;
+  const themeToggle = $("#themeToggle");
+  if (themeToggle) {
+    const nextTheme = state.settings.theme === "dark" ? "Light mode" : "Dark mode";
+    themeToggle.textContent = nextTheme;
+    themeToggle.title = `Switch to ${nextTheme}`;
+  }
   hydrateClassSelects();
   renderDashboard();
   renderClasses();
