@@ -98,6 +98,32 @@
           <div class="metric"><span data-i18n="metricScore">Average Score</span><strong id="metricScore">0%</strong></div>
         </div>
 
+        <div class="intelligence-grid">
+          <section class="panel intelligence-panel">
+            <div class="panel-head compact-head">
+              <h2 data-i18n="topicMasteryMap">Topic Mastery Map</h2>
+              <span class="pill" data-i18n="diagnostic">Diagnostic</span>
+            </div>
+            <div id="masteryMap" class="mastery-list"></div>
+          </section>
+
+          <section class="panel intelligence-panel">
+            <div class="panel-head compact-head">
+              <h2 data-i18n="personalizedStudyPath">Personalized Study Path</h2>
+              <span class="pill" data-i18n="adaptive">Adaptive</span>
+            </div>
+            <div id="studyPath" class="path-list"></div>
+          </section>
+
+          <section class="panel intelligence-panel">
+            <div class="panel-head compact-head">
+              <h2 data-i18n="ragCitationSystem">RAG & Citations</h2>
+              <span class="pill" data-i18n="materialAware">Material-aware</span>
+            </div>
+            <div id="citationPanel" class="citation-panel"></div>
+          </section>
+        </div>
+
         <div class="two-column">
           <section class="panel">
             <div class="panel-head">
@@ -153,6 +179,13 @@
           </form>
         </div>
         <div id="materialsList" class="material-list"></div>
+        <section class="panel rag-panel">
+          <div class="panel-head compact-head">
+            <h2 data-i18n="ragCitationSystem">RAG & Citations</h2>
+            <span class="pill" data-i18n="backendReady">Backend-ready</span>
+          </div>
+          <div id="ragStatusPanel"></div>
+        </section>
       </section>
 
       <section class="view" id="studyView">
@@ -184,6 +217,17 @@
               </div>
             </div>
             <div id="studyOutput" class="lesson-output empty-state" data-i18n="studyOutputEmpty">Choose a class and topic. StudyAI will build a compact lesson, examples, mistakes, and practice questions.</div>
+            <div class="study-tools">
+              <div class="tool-row">
+                <button class="secondary" id="flashcardBtn" type="button" data-i18n="generateFlashcards">Generate Flashcards</button>
+                <button class="secondary" type="button" data-explain-mode="simpler" data-i18n="explainSimpler">Explain simpler</button>
+                <button class="secondary" type="button" data-explain-mode="example" data-i18n="explainWithExample">Give example</button>
+                <button class="secondary" type="button" data-explain-mode="academic" data-i18n="explainAcademic">Academic view</button>
+                <button class="secondary" type="button" data-explain-mode="practice" data-i18n="explainPractice">Practice it</button>
+              </div>
+              <div id="explainAgainOutput" class="explain-output" hidden></div>
+              <div id="flashcardDeck" class="flashcard-deck"></div>
+            </div>
             <div id="studyChatPanel" class="chat-panel" hidden>
               <div class="chat-head">
                 <div>
@@ -270,7 +314,7 @@
               <label><span data-i18n="classLabel">Class</span><select id="assignmentClass"></select></label>
               <label><span data-i18n="assignmentTitle">Assignment title</span><input id="assignmentTitle" data-i18n-placeholder="assignmentTitlePlaceholder" placeholder="Example: Implement CNN classifier"></label>
               <label><span data-i18n="courseDetails">Course details</span><textarea id="assignmentDetails" data-i18n-placeholder="courseDetailsPlaceholder" placeholder="Paste requirements, rules, expected output, language, deadline..."></textarea></label>
-              <label><span data-i18n="mode">Mode</span><select id="assignmentMode"><option value="Guided solution" data-i18n="guidedSolution">Guided solution</option><option value="Hint mode" data-i18n="hintMode">Hint mode</option><option value="Debug my code" data-i18n="debugCode">Debug my code</option><option value="Final review" data-i18n="finalReview">Final review</option></select></label>
+              <label><span data-i18n="mode">Mode</span><select id="assignmentMode"><option value="Guided solution" data-i18n="guidedSolution">Guided solution</option><option value="Concept first" data-i18n="conceptFirst">Concept first</option><option value="Hint mode" data-i18n="hintMode">Hint mode</option><option value="Step-by-step coding" data-i18n="stepCoding">Step-by-step coding</option><option value="Rubric breakdown" data-i18n="rubricBreakdown">Rubric breakdown</option><option value="Test plan" data-i18n="testPlan">Test plan</option><option value="Debug my code" data-i18n="debugCode">Debug my code</option><option value="Final review" data-i18n="finalReview">Final review</option></select></label>
               <button class="primary" type="submit" data-i18n="createStepPlan">Create Step Plan</button>
             </form>
           </section>

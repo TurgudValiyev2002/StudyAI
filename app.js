@@ -196,7 +196,22 @@ const TRANSLATIONS = {
     weakTopicSignal: "Weak topic signal",
     questionHistory: "Question history",
     noClass: "No class",
-    notEnoughExams: "Not enough exams"
+    notEnoughExams: "Not enough exams",
+    topicMasteryMap: "Topic Mastery Map",
+    personalizedStudyPath: "Personalized Study Path",
+    ragCitationSystem: "RAG & Citations",
+    diagnostic: "Diagnostic",
+    materialAware: "Material-aware",
+    backendReady: "Backend-ready",
+    generateFlashcards: "Generate Flashcards",
+    explainSimpler: "Explain simpler",
+    explainWithExample: "Give example",
+    explainAcademic: "Academic view",
+    explainPractice: "Practice it",
+    conceptFirst: "Concept first",
+    stepCoding: "Step-by-step coding",
+    rubricBreakdown: "Rubric breakdown",
+    testPlan: "Test plan"
   }
 };
 
@@ -813,6 +828,10 @@ function renderAll() {
   renderDashboard();
   renderClasses();
   renderMaterials();
+  renderMasteryMap();
+  renderStudyPath();
+  renderCitationPanel();
+  renderRagStatusPanel();
   renderStats();
   $("#settingName").value = state.settings.name;
   $("#settingExplanation").value = state.settings.explanation;
@@ -845,6 +864,126 @@ function renderDashboard() {
   `).join("") : `<div class="empty-state">${escapeHtml(t("noSessions"))}</div>`;
 
   renderRecommendations();
+}
+
+function courseTopics() {
+  const cls = activeClass();
+  const topicSet = new Set((cls?.topics || []).map((topic) => topic.trim()).filter(Boolean));
+  state.sessions
+    .filter((session) => !cls || session.classId === cls.id)
+    .forEach((session) => topicSet.add(session.topic));
+  state.exams
+    .filter((exam) => !cls || exam.classId === cls.id)
+    .forEach((exam) => (exam.topics || []).forEach((topic) => topicSet.add(topic)));
+  state.materials
+    .filter((item) => !cls || item.classId === cls.id)
+    .forEach((item) => {
+      (item.notes || "").split(/[,.;\n]/).slice(0, 3).forEach((topic) => {
+        const cleaned = topic.trim();
+        if (cleaned.length > 3 && cleaned.length < 48) topicSet.add(cleaned);
+      });
+    });
+  return Array.from(topicSet).slice(0, 8);
+}
+
+function topicMasteryData() {
+  const cls = activeClass();
+  const topics = courseTopics();
+  return topics.map((topic) => {
+    let attempts = 0;
+    let correct = 0;
+    state.exams
+      .filter((exam) => exam.submitted && (!cls || exam.classId === cls.id))
+      .forEach((exam) => {
+        (exam.details || []).forEach((detail) => {
+          const detailTopic = String(detail.question?.topic || "").toLowerCase();
+          if (detailTopic && (detailTopic.includes(topic.toLowerCase()) || topic.toLowerCase().includes(detailTopic))) {
+            attempts += 1;
+            if (detail.correct) correct += 1;
+          }
+        });
+      });
+    const studied = state.sessions.some((session) => session.classId === cls?.id && session.topic.toLowerCase().includes(topic.toLowerCase()));
+    const materialSignal = state.materials.some((item) => item.classId === cls?.id && `${item.name} ${item.notes}`.toLowerCase().includes(topic.toLowerCase()));
+    const baseline = attempts ? Math.round((correct / attempts) * 100) : 42;
+    const score = Math.min(98, baseline + (studied ? 10 : 0) + (materialSignal ? 8 : 0));
+    return { topic, score, attempts, status: score >= 78 ? "Strong" : score >= 55 ? "Developing" : "Needs recovery" };
+  }).sort((a, b) => a.score - b.score);
+}
+
+function renderMasteryMap() {
+  const target = $("#masteryMap");
+  if (!target) return;
+  const data = topicMasteryData();
+  target.innerHTML = data.length ? data.map((item) => `
+    <article class="mastery-item">
+      <div>
+        <strong>${escapeHtml(item.topic)}</strong>
+        <span>${escapeHtml(item.status)}${item.attempts ? ` - ${item.attempts} exam signal(s)` : " - needs diagnostic"}</span>
+      </div>
+      <div class="mastery-score">${item.score}%</div>
+      <div class="mastery-bar"><span style="width:${item.score}%"></span></div>
+    </article>
+  `).join("") : `<div class="empty-state">Create a class topic or take an exam to build the mastery map.</div>`;
+}
+
+function renderStudyPath() {
+  const target = $("#studyPath");
+  if (!target) return;
+  const weak = topicMasteryData().slice(0, 3);
+  const cls = activeClass();
+  const nextTopic = weak[0]?.topic || cls?.topics?.[0] || "first course topic";
+  const steps = [
+    `Recover ${nextTopic} with a 15-minute simple explanation.`,
+    "Generate flashcards from the preparation plan and review them once.",
+    "Take a short medium exam focused only on the weakest topic.",
+    "Use wrong answers to request an explain-again example.",
+    "Upload or label materials so citations can point to exact sources later."
+  ];
+  target.innerHTML = steps.map((step, index) => `
+    <article class="path-step">
+      <span>${index + 1}</span>
+      <p>${escapeHtml(step)}</p>
+    </article>
+  `).join("");
+}
+
+function materialCitationRows() {
+  const cls = activeClass();
+  return state.materials
+    .filter((item) => !cls || item.classId === cls.id)
+    .slice(-5)
+    .reverse();
+}
+
+function renderCitationPanel() {
+  const target = $("#citationPanel");
+  if (!target) return;
+  const rows = materialCitationRows();
+  const readiness = state.materials.length ? 55 : 15;
+  target.innerHTML = `
+    <div class="readiness-meter"><span style="width:${readiness}%"></span></div>
+    <p><strong>${readiness}% citation readiness.</strong> Local materials are tracked now. Exact chunk retrieval needs backend parsing, embeddings, and vector search.</p>
+    <div class="citation-list">
+      ${rows.length ? rows.map((item) => `<span>${escapeHtml(item.type)} - ${escapeHtml(item.name)}</span>`).join("") : "<span>No materials uploaded yet.</span>"}
+    </div>
+  `;
+}
+
+function renderRagStatusPanel() {
+  const target = $("#ragStatusPanel");
+  if (!target) return;
+  const rows = materialCitationRows();
+  target.innerHTML = `
+    <div class="rag-status-grid">
+      <article><strong>${state.materials.length}</strong><span>Total material records</span></article>
+      <article><strong>${rows.length}</strong><span>Active class citation sources</span></article>
+      <article><strong>Next</strong><span>Parse files, embed chunks, store vectors, return citations.</span></article>
+    </div>
+    <div class="citation-list">
+      ${rows.length ? rows.map((item) => `<span>${escapeHtml(item.name)} - ${escapeHtml(item.status)}</span>`).join("") : "<span>Add slides, books, notes, or assignment sheets to prepare the citation layer.</span>"}
+    </div>
+  `;
 }
 
 function renderRecommendations() {
@@ -1186,9 +1325,63 @@ function renderResults(exam) {
   `;
 }
 
+function generateFlashcards(session) {
+  const topic = session?.topic || "this topic";
+  return [
+    {
+      front: `What problem does ${topic} solve?`,
+      back: `It should be connected to a concrete course problem, not memorized as an isolated definition.`
+    },
+    {
+      front: `Explain ${topic} in one simple sentence.`,
+      back: `Use the main idea, the input, the output, and one reason why it matters.`
+    },
+    {
+      front: `What is a common mistake in ${topic}?`,
+      back: `Students often memorize the formula or keyword but ignore assumptions, edge cases, or evaluation.`
+    },
+    {
+      front: `How would an exam test real understanding of ${topic}?`,
+      back: `It would ask you to apply it to a new example, compare alternatives, or explain why a failure happens.`
+    },
+    {
+      front: `What material should support ${topic}?`,
+      back: `Use lecture slides, book chapters, notes, and past exams. In the RAG backend, answers should cite exact chunks.`
+    },
+    {
+      front: `What is the fastest recovery action for ${topic}?`,
+      back: `Study one compact explanation, solve one example, then correct one wrong answer with reasoning.`
+    }
+  ];
+}
+
+function renderFlashcards(cards) {
+  const deck = $("#flashcardDeck");
+  deck.innerHTML = cards.map((card, index) => `
+    <article class="flashcard" tabindex="0">
+      <span>Card ${index + 1}</span>
+      <strong>${escapeHtml(card.front)}</strong>
+      <p>${escapeHtml(card.back)}</p>
+    </article>
+  `).join("");
+}
+
+function explainAgain(mode) {
+  if (!latestStudySession) return "Generate a preparation plan first, then I can explain it again.";
+  const topic = latestStudySession.topic;
+  const patterns = {
+    simpler: `<h3>Simpler explanation</h3><p>${escapeHtml(topic)} is a tool for solving a specific kind of problem. First learn what goes in, what comes out, and why the method is useful. Then learn the formal details.</p>`,
+    example: `<h3>Concrete example</h3><p>Imagine your teacher gives a small case about ${escapeHtml(topic)}. Write the input, apply one step manually, check the output, then explain what could go wrong.</p>`,
+    academic: `<h3>Academic view</h3><p>Define ${escapeHtml(topic)} through its assumptions, objective, mechanism, limitations, and evaluation criteria. A strong answer states when the method is valid and when it fails.</p>`,
+    practice: `<h3>Practice task</h3><ol><li>Give a definition of ${escapeHtml(topic)}.</li><li>Create one small example.</li><li>Name one limitation.</li><li>Write one exam question and answer it.</li></ol>`
+  };
+  return patterns[mode] || patterns.simpler;
+}
+
 function buildAssignmentPlan(payload) {
   const title = payload.title || "Assignment";
-  return [
+  const mode = payload.mode || "Guided solution";
+  const common = [
     {
       title: "Understand the task",
       code: `# ${title}\n# First, rewrite the assignment in your own words.\n# Identify inputs, outputs, constraints, and grading criteria.`,
@@ -1210,6 +1403,58 @@ function buildAssignmentPlan(payload) {
       explain: "A strong student does not only produce output. They verify it and explain what could fail."
     }
   ];
+  const modeSteps = {
+    "Concept first": [
+      {
+        title: "Concept map before solution",
+        code: `# Concept map\n# 1. Main theory behind ${title}\n# 2. Required formulas or algorithms\n# 3. What the assignment is trying to teach\n# 4. What evidence proves your answer is correct`,
+        explain: "This mode slows down before implementation. It is best when the student does not yet understand the assignment idea."
+      }
+    ],
+    "Hint mode": [
+      {
+        title: "First hint only",
+        code: `# Hint\n# Do not solve everything yet.\n# Locate the smallest input example and manually compute the expected output.`,
+        explain: "Hint mode protects learning. It gives direction without replacing the student's thinking."
+      }
+    ],
+    "Step-by-step coding": [
+      {
+        title: "Code one large part, then pause",
+        code: `def solve(prepared):\n    \"\"\"Implement only the first complete part here.\"\"\"\n    partial_result = []\n    for item in prepared:\n        # Add the core transformation for one item.\n        partial_result.append(item)\n    return partial_result`,
+        explain: "This gives one meaningful chunk, not the whole answer. The student should run and understand this part before moving forward."
+      }
+    ],
+    "Rubric breakdown": [
+      {
+        title: "Translate rubric into checklist",
+        code: `# Rubric checklist\n# [ ] Correctness\n# [ ] Clear explanation\n# [ ] Edge cases\n# [ ] Tests or evaluation\n# [ ] Clean formatting and submission rules`,
+        explain: "Many students lose marks because they solve the core task but ignore grading details."
+      }
+    ],
+    "Test plan": [
+      {
+        title: "Build tests before final answer",
+        code: `def test_basic_case():\n    sample = [1, 2, 3]\n    result = solve(sample)\n    assert result is not None\n\n# Add: edge case, empty input, invalid input, and expected-output test.`,
+        explain: "Tests make the assignment defensible. They also reveal whether the implementation really matches the requirement."
+      }
+    ],
+    "Debug my code": [
+      {
+        title: "Debug checklist",
+        code: `# Debug flow\n# 1. Reproduce the error\n# 2. Print or inspect the smallest failing variable\n# 3. Check input shape/type\n# 4. Compare expected vs actual output\n# 5. Fix one cause at a time`,
+        explain: "Debug mode teaches diagnosis. It should not blindly rewrite the whole solution."
+      }
+    ],
+    "Final review": [
+      {
+        title: "Submission review",
+        code: `# Final review\n# [ ] Does every requirement appear in the solution?\n# [ ] Are assumptions explained?\n# [ ] Are outputs reproducible?\n# [ ] Are comments useful but not noisy?\n# [ ] Is the report or code ready to submit?`,
+        explain: "Final review checks quality, clarity, and grading alignment before submission."
+      }
+    ]
+  };
+  return [common[0], ...(modeSteps[mode] || []), ...common.slice(1)];
 }
 
 function renderAssignmentSteps() {
@@ -1273,6 +1518,13 @@ document.addEventListener("click", (event) => {
     navigator.clipboard.writeText(assignmentPlan[Number(copy.dataset.copy)].code);
     copy.textContent = "Copied";
     setTimeout(() => { copy.textContent = "Copy"; }, 900);
+  }
+
+  const explainButton = event.target.closest("[data-explain-mode]");
+  if (explainButton) {
+    const target = $("#explainAgainOutput");
+    target.hidden = false;
+    target.innerHTML = explainAgain(explainButton.dataset.explainMode);
   }
 });
 
@@ -1362,6 +1614,9 @@ $("#studyForm").addEventListener("submit", async (event) => {
   const output = $("#studyOutput");
   output.classList.remove("empty-state");
   output.innerHTML = "Preparing hosted AI lesson...";
+  $("#flashcardDeck").innerHTML = "";
+  $("#explainAgainOutput").hidden = true;
+  $("#explainAgainOutput").innerHTML = "";
 
   try {
     const result = await callStudyAI("study", studyContext({ payload }));
@@ -1400,6 +1655,14 @@ $("#saveStudyBtn").addEventListener("click", () => {
 });
 
 $("#startChatBtn").addEventListener("click", openPreparationChat);
+
+$("#flashcardBtn").addEventListener("click", () => {
+  if (!latestStudySession) {
+    $("#flashcardDeck").innerHTML = `<div class="empty-state">Generate a preparation plan first, then StudyAI can make flashcards from it.</div>`;
+    return;
+  }
+  renderFlashcards(generateFlashcards(latestStudySession));
+});
 
 $("#chatForm").addEventListener("submit", async (event) => {
   event.preventDefault();

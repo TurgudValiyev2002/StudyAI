@@ -413,6 +413,141 @@ h2 {
   font-size: 2rem;
 }
 
+.intelligence-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr;
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.intelligence-panel {
+  min-height: 250px;
+}
+
+.compact-head {
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.compact-head h2 {
+  font-size: 1.15rem;
+}
+
+.mastery-list, .path-list, .citation-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.mastery-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.mastery-item span {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.mastery-score {
+  font-weight: 900;
+  color: var(--primary-strong);
+}
+
+.mastery-bar, .readiness-meter {
+  grid-column: 1 / -1;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+.mastery-bar span, .readiness-meter span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--primary));
+}
+
+.path-step {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 10px;
+  align-items: start;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.path-step span {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: white;
+  background: var(--primary);
+  font-weight: 900;
+}
+
+.path-step p, .citation-panel p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.citation-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.citation-list span {
+  padding: 7px 9px;
+  border-radius: 999px;
+  color: var(--muted);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  font-size: 0.82rem;
+}
+
+.rag-panel {
+  margin-top: 18px;
+}
+
+.rag-status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.rag-status-grid article {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.rag-status-grid strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 1.25rem;
+}
+
+.rag-status-grid span {
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+
 .two-column, .study-layout, .assignment-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -606,6 +741,65 @@ textarea {
 
 .lesson-output h3 {
   margin: 18px 0 8px;
+}
+
+.study-tools {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.tool-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tool-row button {
+  min-height: 44px;
+}
+
+.explain-output {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+  line-height: 1.6;
+}
+
+.explain-output h3 {
+  margin-bottom: 6px;
+}
+
+.flashcard-deck {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.flashcard {
+  min-height: 170px;
+  display: grid;
+  align-content: start;
+  gap: 9px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: linear-gradient(140deg, rgba(95, 177, 154, 0.14), transparent 54%), var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.flashcard span {
+  color: var(--primary-strong);
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.flashcard p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 .empty-state {
@@ -900,11 +1094,11 @@ dialog::backdrop {
     flex: 1;
   }
 
-  .hero-band, .two-column, .study-layout, .assignment-layout, .result-score {
+  .hero-band, .two-column, .study-layout, .assignment-layout, .result-score, .intelligence-grid {
     grid-template-columns: 1fr;
   }
 
-  .metric-grid, .class-grid, .stats-grid, .info-card-grid, .contact-grid {
+  .metric-grid, .class-grid, .stats-grid, .info-card-grid, .contact-grid, .flashcard-deck {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -956,7 +1150,7 @@ dialog::backdrop {
     flex: 1;
   }
 
-  .metric-grid, .class-grid, .stats-grid, .form-grid, .form-grid.compact, .choice-grid, .step-grid, .info-card-grid, .contact-grid {
+  .metric-grid, .class-grid, .stats-grid, .form-grid, .form-grid.compact, .choice-grid, .step-grid, .info-card-grid, .contact-grid, .flashcard-deck, .rag-status-grid {
     grid-template-columns: 1fr;
   }
 
